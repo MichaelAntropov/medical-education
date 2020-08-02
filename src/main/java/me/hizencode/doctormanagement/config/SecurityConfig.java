@@ -1,6 +1,6 @@
 package me.hizencode.doctormanagement.config;
 
-import me.hizencode.doctormanagement.service.AppUserDetailsService;
+import me.hizencode.doctormanagement.user.AppUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -26,12 +26,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    protected void configure(final HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/admin").hasRole("ADMIN")
-                .antMatchers("/user").hasAnyRole("USER","ADMIN")
-                .antMatchers("/").permitAll()
-                .and().formLogin();
+                    .antMatchers("/admin").hasRole("ADMIN")
+                    .antMatchers("/user").hasAnyRole("USER","ADMIN")
+                    .antMatchers("/").permitAll()
+                .and()
+                    .formLogin()
+                    .loginPage("/login")
+                    .loginProcessingUrl("/login-process")
+                    .permitAll()
+                    .defaultSuccessUrl("/user")
+                .and()
+                    .logout()
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/login")
+                    .permitAll()
+                .and()
+                .exceptionHandling().accessDeniedPage("/access-denied");
     }
 
     //BCrypt bean definition of password encoder

@@ -1,8 +1,13 @@
-<html lang="en">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
     <head>
         <title>Home Page</title>
     </head>
     <body>
-        Welcome home!
+        <h2>Welcome home!</h2>
+        
+        <hr>
+
+        <a th:href="@{/login}">Log in</a>
     </body>
 </html>

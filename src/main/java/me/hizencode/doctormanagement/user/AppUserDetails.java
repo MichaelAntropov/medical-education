@@ -1,4 +1,4 @@
-package me.hizencode.doctormanagement.models;
+package me.hizencode.doctormanagement.user;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

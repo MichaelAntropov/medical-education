@@ -1,8 +1,5 @@
-package me.hizencode.doctormanagement.service;
+package me.hizencode.doctormanagement.user;
 
-import me.hizencode.doctormanagement.models.AppUserDetails;
-import me.hizencode.doctormanagement.models.User;
-import me.hizencode.doctormanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,6 +1,5 @@
-package me.hizencode.doctormanagement.repository;
+package me.hizencode.doctormanagement.user;
 
-import me.hizencode.doctormanagement.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

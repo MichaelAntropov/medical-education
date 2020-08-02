@@ -1,4 +1,4 @@
-package me.hizencode.doctormanagement.models;
+package me.hizencode.doctormanagement.user;
 
 import javax.persistence.*;
 import java.util.Collection;
