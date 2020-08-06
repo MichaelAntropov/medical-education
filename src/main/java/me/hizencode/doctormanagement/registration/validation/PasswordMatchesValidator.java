@@ -1,6 +1,6 @@
-package me.hizencode.doctormanagement.login.registration.validation;
+package me.hizencode.doctormanagement.registration.validation;
 
-import me.hizencode.doctormanagement.login.registration.UserDto;
+import me.hizencode.doctormanagement.registration.UserDto;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

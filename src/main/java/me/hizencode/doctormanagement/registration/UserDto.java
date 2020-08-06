@@ -1,7 +1,7 @@
-package me.hizencode.doctormanagement.login.registration;
+package me.hizencode.doctormanagement.registration;
 
-import me.hizencode.doctormanagement.login.registration.validation.PasswordMatches;
-import me.hizencode.doctormanagement.login.registration.validation.ValidEmail;
+import me.hizencode.doctormanagement.registration.validation.PasswordMatches;
+import me.hizencode.doctormanagement.registration.validation.ValidEmail;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

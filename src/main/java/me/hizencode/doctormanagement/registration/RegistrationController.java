@@ -1,4 +1,4 @@
-package me.hizencode.doctormanagement.login.registration;
+package me.hizencode.doctormanagement.registration;
 
 import me.hizencode.doctormanagement.user.UserAlreadyExistException;
 import me.hizencode.doctormanagement.user.UserService;

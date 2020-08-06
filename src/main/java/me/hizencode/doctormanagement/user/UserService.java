@@ -1,6 +1,6 @@
 package me.hizencode.doctormanagement.user;
 
-import me.hizencode.doctormanagement.login.registration.UserDto;
+import me.hizencode.doctormanagement.registration.UserDto;
 import me.hizencode.doctormanagement.user.role.RoleEntity;
 import me.hizencode.doctormanagement.user.role.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;

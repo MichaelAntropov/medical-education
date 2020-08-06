@@ -1,4 +1,4 @@
-package me.hizencode.doctormanagement.login.registration.validation;
+package me.hizencode.doctormanagement.registration.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
