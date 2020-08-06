@@ -1,21 +1,52 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-	<title>Login page</title>
+	<title>Sign in</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+	<link rel="stylesheet" href="../../static/css/bootstrap.css">
+	<link rel="stylesheet" href="../../static/css/bootstrap-grid.css">
+	
+	<link rel="stylesheet" href="../../static/css/custom.css">
+	<!--===============================================================================================-->
 </head>
-<body>
-<h1>Login page</h1>
-<p th:if="${param.error}" class="error">Wrong user or password</p>
-<p th:if="${param.logout}" class="error">You have been logged out.</p>
-<form th:action="@{/login-process}" method="POST">
-	<label for="username">Username</label>:
-	<input type="text" id="username" name="username" autofocus="autofocus" /> <br />
-	
-	<label for="password">Password</label>:
-	<input type="password" id="password" name="password" /> <br />
-	
-	<input type="submit" value="Log in" />
-</form>
-<a th:href="@{/templates/registration}">Don't have an account? Register</a>
+<body class="text-center">
+
+	<form class="form-signin" th:action="@{/login-process}" method="POST">
+		<h1 class="h3 mb-3 font-weight-normal">Sign in</h1>
+		
+		<div th:if="${param.error}" class="alert alert-danger" role="alert">
+			Wrong user or password
+		</div>
+		
+		<div th:if="${param.logout}" class="alert alert-success" role="alert">
+			You have been logged out.
+		</div>
+		
+		<label class="sr-only" for="username">Username</label>
+		<input class="form-control" id="username" name="username" type="text"
+		       placeholder="Username" required autofocus>
+		
+		<label class="sr-only" for="password">Password</label>
+		<input class="form-control" id="password" name="password" type="password"
+		       placeholder="Password" required>
+		
+		<div class="row">
+			<div class="col">
+				<div class="custom-control custom-checkbox mt-4 mb-4">
+					<input class="custom-control-input" id="rememberMe" type="checkbox">
+					<label class="custom-control-label" for="rememberMe">Remember me</label>
+				</div>
+			</div>
+			<div class="col">
+				<a class="text-muted" href="#"><small>Forgot your password?</small></a>
+			</div>
+		</div>
+		
+		<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+		
+		<p class="mt-1 mb-3 text-muted">Not registered? <a th:href="@{/registration}">Create an account</a></p>
+	</form>
 </body>
 </html>

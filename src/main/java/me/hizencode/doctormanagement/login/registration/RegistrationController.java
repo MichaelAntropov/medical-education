@@ -31,7 +31,7 @@ public class RegistrationController {
 
         model.addAttribute("user", new UserDto());
 
-        return "login/registration/registration-page";
+        return "registration/registration-page";
     }
 
     @PostMapping("/registration-process")
@@ -45,7 +45,7 @@ public class RegistrationController {
 
         if (theBindingResult.hasErrors()){
             logger.info(Arrays.toString(theBindingResult.getAllErrors().toArray()));
-            return "login/registration/registration-page";
+            return "registration/registration-page";
         }
 
         try {
@@ -54,9 +54,9 @@ public class RegistrationController {
             logger.warning("User name/email already exists.");
             model.addAttribute("message", "An account with this username/email already exists.");
             model.addAttribute("user", new UserDto());
-            return "login/registration/registration-page";
+            return "registration/registration-page";
         }
 
-        return "login/registration/registration-success";
+        return "registration/registration-success";
     }
 }
