@@ -1,10 +1,10 @@
-package me.hizencode.doctormanagement.user;
+package me.hizencode.doctormanagement.user.role;
 
 import javax.persistence.*;
 
 @Entity
 @Table(schema = "doctor_management", name = "roles")
-public class Role {
+public class RoleEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,6 +13,13 @@ public class Role {
 
     @Column(name = "name")
     private String name;
+
+    public RoleEntity() {
+    }
+
+    public RoleEntity(String name) {
+        this.name = name;
+    }
 
     public int getId() {
         return id;
