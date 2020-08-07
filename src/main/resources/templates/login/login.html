@@ -11,42 +11,100 @@
 	<link rel="stylesheet" href="../../static/css/custom.css">
 	<!--===============================================================================================-->
 </head>
-<body class="text-center">
+<body>
 
-	<form class="form-signin" th:action="@{/login-process}" method="POST">
-		<h1 class="h3 mb-3 font-weight-normal">Sign in</h1>
-		
-		<div th:if="${param.error}" class="alert alert-danger" role="alert">
-			Wrong user or password
+	<nav class="navbar navbar-expand-md navbar-dark bg-primary">
+		<div class="container">
+			
+			<a class="navbar-brand" href="#">
+				<img src="../../static/img/logo.png" alt="Logo" style="width:40px">
+				Hizencode
+			</a>
+			
+			<button class="navbar-toggler collapsed" type="button"
+			        data-toggle="collapse" data-target="#navbarsExample05"
+			        aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			
+			<div class="navbar-collapse collapse " id="navbarsExample05" style="">
+				<ul class="navbar-nav ml-auto main-menu-nav
+				d-flex d-flex justify-content-center align-items-center">
+					<li class="nav-item active">
+						<a class="nav-link" href="#">Project<span class="sr-only">(current)</span></a>
+					</li>
+					<li class="nav-item active">
+						<a class="nav-link" href="#">Courses<span class="sr-only">(current)</span></a>
+					</li>
+					<li class="nav-item active">
+						<a class="nav-link" href="#">Contacts<span class="sr-only">(current)</span></a>
+					</li>
+					
+					<div class="d-block d-md-block pr-4"></div>
+					
+					<div class="d-block d-md-block pr-4 border-left border-light" style="height: 30px">
+					
+					</div>
+					
+					<li class="nav-item active ">
+						<a class="nav-link" href="#">Sign in<span class="sr-only">(current)</span></a>
+					</li>
+					
+					<li class="nav-item active">
+						<a class="nav-link" href="#">Sign up<span class="sr-only">(current)</span></a>
+					</li>
+				</ul>
+			
+			</div>
 		</div>
-		
-		<div th:if="${param.logout}" class="alert alert-success" role="alert">
-			You have been logged out.
-		</div>
-		
-		<label class="sr-only" for="username">Username</label>
-		<input class="form-control" id="username" name="username" type="text"
-		       placeholder="Username" required autofocus>
-		
-		<label class="sr-only" for="password">Password</label>
-		<input class="form-control" id="password" name="password" type="password"
-		       placeholder="Password" required>
-		
-		<div class="row">
-			<div class="col">
-				<div class="custom-control custom-checkbox mt-4 mb-4">
-					<input class="custom-control-input" id="rememberMe" type="checkbox">
-					<label class="custom-control-label" for="rememberMe">Remember me</label>
+	</nav>
+
+	<div class="form-container">
+		<form class="form-signin text-center" th:action="@{/login-process}" method="POST">
+			<h1 class="h3 mb-3 font-weight-normal">Sign in</h1>
+			
+			<div th:if="${param.error}" class="alert alert-danger" role="alert">
+				Wrong user or password
+			</div>
+			
+			<div th:if="${param.logout}" class="alert alert-success" role="alert">
+				You have been logged out.
+			</div>
+			
+			<label class="sr-only" for="username">Username</label>
+			<input class="form-control" id="username" name="username" type="text"
+			       placeholder="Username" required autofocus>
+			
+			<label class="sr-only" for="password">Password</label>
+			<input class="form-control" id="password" name="password" type="password"
+			       placeholder="Password" required>
+			
+			<div class="row">
+				<div class="col">
+					<div class="custom-control custom-checkbox mt-4 mb-4">
+						<input class="custom-control-input" id="rememberMe" type="checkbox">
+						<label class="custom-control-label" for="rememberMe">Remember me</label>
+					</div>
+				</div>
+				<div class="col">
+					<a class="text-muted" href="#"><small>Forgot your password?</small></a>
 				</div>
 			</div>
-			<div class="col">
-				<a class="text-muted" href="#"><small>Forgot your password?</small></a>
-			</div>
-		</div>
-		
-		<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-		
-		<p class="mt-1 mb-3 text-muted">Not registered? <a th:href="@{/registration}">Create an account</a></p>
-	</form>
+			
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+			
+			<p class="mt-1 mb-3 text-muted">Not registered? <a th:href="@{/registration}">Create an account</a></p>
+		</form>
+	</div>
+	
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+	        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+	        crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+	        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+	        crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+	        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+	        crossorigin="anonymous"></script>
 </body>
 </html>
