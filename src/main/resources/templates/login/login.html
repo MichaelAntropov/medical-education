@@ -15,8 +15,7 @@
 
 	<nav class="navbar navbar-expand-md navbar-dark bg-primary">
 		<div class="container">
-			
-			<a class="navbar-brand" href="#">
+			<a class="navbar-brand" th:href="@{/}">
 				<img src="../../static/img/logo.png" alt="Logo" style="width:40px">
 				Hizencode
 			</a>
@@ -40,18 +39,18 @@
 						<a class="nav-link" href="#">Contacts<span class="sr-only">(current)</span></a>
 					</li>
 					
-					<div class="d-block d-md-block pr-4"></div>
+					<div class="d-none d-md-block pr-4"></div>
 					
-					<div class="d-block d-md-block pr-4 border-left border-light" style="height: 30px">
+					<div class="d-none d-md-block pr-4 border-left border-light" style="height: 30px"></div>
 					
-					</div>
+					<div class="d-sm-block d-md-none border-bottom border-light" style="width: 90%"></div>
 					
 					<li class="nav-item active ">
-						<a class="nav-link" href="#">Sign in<span class="sr-only">(current)</span></a>
+						<a class="nav-link" th:href="@{/login}">Sign in<span class="sr-only">(current)</span></a>
 					</li>
 					
 					<li class="nav-item active">
-						<a class="nav-link" href="#">Sign up<span class="sr-only">(current)</span></a>
+						<a class="nav-link" th:href="@{/registration}">Sign up<span class="sr-only">(current)</span></a>
 					</li>
 				</ul>
 			
@@ -59,42 +58,44 @@
 		</div>
 	</nav>
 
-	<div class="form-container">
-		<form class="form-signin text-center" th:action="@{/login-process}" method="POST">
-			<h1 class="h3 mb-3 font-weight-normal">Sign in</h1>
-			
-			<div th:if="${param.error}" class="alert alert-danger" role="alert">
-				Wrong user or password
-			</div>
-			
-			<div th:if="${param.logout}" class="alert alert-success" role="alert">
-				You have been logged out.
-			</div>
-			
-			<label class="sr-only" for="username">Username</label>
-			<input class="form-control" id="username" name="username" type="text"
-			       placeholder="Username" required autofocus>
-			
-			<label class="sr-only" for="password">Password</label>
-			<input class="form-control" id="password" name="password" type="password"
-			       placeholder="Password" required>
-			
-			<div class="row">
-				<div class="col">
-					<div class="custom-control custom-checkbox mt-4 mb-4">
-						<input class="custom-control-input" id="rememberMe" type="checkbox">
-						<label class="custom-control-label" for="rememberMe">Remember me</label>
+	<div class="form-container form-background">
+		<div class="container d-flex form-card justify-content-center align-items-center">
+			<form class="form-signin text-center" th:action="@{/login-process}" method="POST">
+				<h1 class="h3 mb-3 font-weight-normal">Sign in</h1>
+				
+				<div th:if="${param.error}" class="alert alert-danger" role="alert">
+					Wrong user or password
+				</div>
+				
+				<div th:if="${param.logout}" class="alert alert-success" role="alert">
+					You have been logged out.
+				</div>
+				
+				<label class="sr-only" for="username">Username</label>
+				<input class="form-control" id="username" name="username" type="text"
+				       placeholder="Username" required autofocus>
+				
+				<label class="sr-only" for="password">Password</label>
+				<input class="form-control" id="password" name="password" type="password"
+				       placeholder="Password" required>
+				
+				<div class="row">
+					<div class="col">
+						<div class="custom-control custom-checkbox mt-4 mb-4">
+							<input class="custom-control-input" id="rememberMe" type="checkbox">
+							<label class="custom-control-label" for="rememberMe">Remember me</label>
+						</div>
+					</div>
+					<div class="col">
+						<a class="text-muted" href="#"><small>Forgot your password?</small></a>
 					</div>
 				</div>
-				<div class="col">
-					<a class="text-muted" href="#"><small>Forgot your password?</small></a>
-				</div>
-			</div>
-			
-			<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-			
-			<p class="mt-1 mb-3 text-muted">Not registered? <a th:href="@{/registration}">Create an account</a></p>
-		</form>
+				
+				<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+				
+				<p class="mt-1 mb-3 text-muted">Not registered? <a th:href="@{/registration}">Create an account</a></p>
+			</form>
+		</div>
 	</div>
 	
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
