@@ -1,46 +1,125 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-	<meta charset="UTF-8">
 	<title>Registration</title>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+	<link rel="stylesheet" href="../../static/css/bootstrap.css">
+	<link rel="stylesheet" href="../../static/css/bootstrap-grid.css">
+	
+	<link rel="stylesheet" href="../../static/css/custom.css">
+	<!--===============================================================================================-->
 </head>
 <body>
-<h1>Registration form</h1>
-<form th:action="@{/registration-process}" th:object="${user}" method="POST">
-	<div th:if="${message}">
-		<p th:text="${message}" style="color: red">Message</p>
+	<nav class="navbar navbar-expand-md navbar-dark bg-primary">
+		<div class="container">
+			<a class="navbar-brand" th:href="@{/}">
+				<img src="../../static/img/logo.png" alt="Logo" style="width:40px">
+				Hizencode
+			</a>
+			
+			<button class="navbar-toggler collapsed" type="button"
+			        data-toggle="collapse" data-target="#navbarsExample05"
+			        aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			
+			<div class="navbar-collapse collapse " id="navbarsExample05" style="">
+				<ul class="navbar-nav ml-auto main-menu-nav
+					 d-flex justify-content-center align-items-center">
+					<li class="nav-item active">
+						<a class="nav-link" href="#">Project<span class="sr-only">(current)</span></a>
+					</li>
+					<li class="nav-item active">
+						<a class="nav-link" href="#">Courses<span class="sr-only">(current)</span></a>
+					</li>
+					<li class="nav-item active">
+						<a class="nav-link" href="#">Contacts<span class="sr-only">(current)</span></a>
+					</li>
+					
+					<div class="d-none d-md-block pr-4"></div>
+					
+					<div class="d-none d-md-block pr-4 border-left border-light" style="height: 30px"></div>
+					
+					<div class="d-sm-block d-md-none border-bottom border-light" style="width: 90%"></div>
+					
+					<li class="nav-item active ">
+						<a class="nav-link" th:href="@{/login}">Sign in<span class="sr-only">(current)</span></a>
+					</li>
+					
+					<li class="nav-item active">
+						<a class="nav-link" th:href="@{/registration}">Sign up<span class="sr-only">(current)</span></a>
+					</li>
+				</ul>
+			
+			</div>
+		</div>
+	</nav>
+	
+	<div class="form-background">
+		<div class="form-container d-flex align-items-center">
+			<div class="form-card container d-flex align-items-center">
+				<form class="form-signin text-center mt-3 mb-3"
+				      th:action="@{/registration-process}" th:object="${user}" method="POST">
+					
+					<h1 class="h3 mb-3 font-weight-normal">Register</h1>
+					
+					<div th:if="${message}">
+						<p th:text="${message}" style="color: red">Message</p>
+					</div>
+					
+					<!--				Username-->
+					<p th:each="error: ${#fields.errors('username')}"
+					   th:text="${error}" style="color: red">Validation error</p>
+					<label class="sr-only" for="username">Username</label>
+					<input class="form-control  mb-3" id="username"
+					       placeholder="Username" required autofocus
+					       th:field="*{username}" type="text">
+					
+					<!--				Email-->
+					<p th:each="error : ${#fields.errors('email')}"
+					   th:text="${error}" style="color: red">Validation error</p>
+					<label class="sr-only" for="email">Username</label>
+					<input class="form-control  mb-3" id="email"
+					       placeholder="Email" required autofocus
+					       th:field="*{email}" type="email" >
+					
+					<!--				Password-->
+					<p th:each="error : ${#fields.errors('password')}"
+					   th:text="${error}" style="color: red">Validation error</p>
+					<label class="sr-only" for="password">Password</label>
+					<input class="form-control  mb-3" id="password"
+					       placeholder="Password" required
+					       th:field="*{password}" type="password" >
+					
+					<!--				Matching password-->
+					<p th:if="${#fields.hasErrors('${user}')}" th:errors="${user}"
+					   style="color: red">Validation error</p>
+					<label class="sr-only" for="matchingPassword">Confirm password</label>
+					<input class="form-control  mb-1" id="matchingPassword"
+					       placeholder="Confirm password" required
+					       th:field="*{matchingPassword}" type="password" >
+					
+					
+					<button class="btn btn-lg btn-primary btn-block mt-5" type="submit">Sign up</button>
+					
+					<p class="mt-1 mb-3 text-muted">Already registered?
+						<a th:href="@{/login}">Log in</a></p>
+				</form>
+			</div>
+		</div>
 	</div>
-	<div>
-		<label>Username:
-			<input th:field="*{username}"/>
-		</label>
-		<p th:each="error: ${#fields.errors('username')}"
-		   th:text="${error}" style="color: red">Validation error</p>
-	</div>
-	<div>
-		<label>Email:
-			<input type="email" th:field="*{email}"/>
-		</label>
-		<p th:each="error : ${#fields.errors('email')}"
-		   th:text="${error}" style="color: red">Validation error</p>
-	</div>
-	<div>
-		<label>Password:
-			<input type="password" th:field="*{password}"/>
-		</label>
-		<p th:each="error : ${#fields.errors('password')}"
-		   th:text="${error}" style="color: red">Validation error</p>
-	</div>
-	<div>
-		<label>Confirm password:
-			<input type="password" th:field="*{matchingPassword}"/>
-		</label>
-		<p th:if="${#fields.hasErrors('${user}')}" th:errors="${user}"
-		   style="color: red">Validation error</p>
-	</div>
-	<button type="submit">Register</button>
-</form>
-
-<a th:href="@{/login}">Log in</a>
+	
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+	        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+	        crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+	        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+	        crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+	        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+	        crossorigin="anonymous"></script>
 </body>
 </html>
