@@ -6,6 +6,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	
+	<link rel="shortcut icon" type="image/png" href="../static/img/icon.ico">
+	
 	<link rel="stylesheet" href="../static/css/bootstrap.css">
 	<link rel="stylesheet" href="../static/css/bootstrap-grid.css">
 	
@@ -58,7 +60,18 @@
 	</div>
 </nav>
 
-<a th:href="@{/login}">Log in</a> <a th:href="@{/registration}">Register</a>
+<div class="main-background">
+	<div class="landing-box d-flex align-items-center">
+		<div class="container d-flex flex-column align-items-center">
+			<p class="text-center text-uppercase text-light display-4">
+				Medical education for doctors and pharmacists
+			</p>
+			<a class="btn btn-primary btn-lg mt-5" role="button" th:href="@{/registration}" >
+				Register
+			</a>
+		</div>
+	</div>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"

@@ -19,7 +19,25 @@ body {
 }
 
 .form-container {
+    height: 90%;
     min-height: 800px;
+}
+
+.landing-box {
+    height: 90%;
+    min-height: 700px;
+}
+
+.main-background {
+    width: 100%;
+    height: auto;
+    opacity: 0.85;
+    z-index: -1;
+    background-image: url("../img/background.jpg");
+    background-repeat: no-repeat;
+    background-position: center top;
+
+    box-shadow: inset 0 0 0 1000px rgba(0,0,0,0.4);
 }
 
 .form-background {
