@@ -1,6 +1,7 @@
 package me.hizencode.doctormanagement.user;
 
-import me.hizencode.doctormanagement.user.role.Role;
+import me.hizencode.doctormanagement.certificates.CertificateEntity;
+import me.hizencode.doctormanagement.cources.CourseEntity;
 import me.hizencode.doctormanagement.user.role.RoleEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -33,6 +34,16 @@ public class UserEntity {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Collection<RoleEntity> roles;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(name = "courses",
+            joinColumns = @JoinColumn(name = "id"))
+    private Collection<CourseEntity> courses;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(name = "certificates",
+            joinColumns = @JoinColumn(name = "id"))
+    private Collection<CertificateEntity> certificates;
 
     public UserEntity() {
     }
@@ -96,5 +107,21 @@ public class UserEntity {
 
     public void setRoles(Collection<RoleEntity> roles) {
         this.roles = roles;
+    }
+
+    public Collection<CourseEntity> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(Collection<CourseEntity> courses) {
+        this.courses = courses;
+    }
+
+    public Collection<CertificateEntity> getCertificates() {
+        return certificates;
+    }
+
+    public void setCertificates(Collection<CertificateEntity> certificates) {
+        this.certificates = certificates;
     }
 }
