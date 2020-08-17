@@ -27,6 +27,7 @@ public class UserEntity {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "active")
     private boolean active;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
