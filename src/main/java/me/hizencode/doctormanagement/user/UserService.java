@@ -43,13 +43,13 @@ public class UserService implements UserDetailsService {
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserEntity> user = userRepository.findUserByUsername(username);
+    public UserPrincipal loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<UserEntity> user = userRepository.findUserEntityByEmail(email);
 
         if(user.isPresent()) {
             return getUserPrincipal(user.get());
         } else {
-            throw new UsernameNotFoundException("User not found: " + username);
+            throw new UsernameNotFoundException("User not found: " + email);
         }
 
     }
