@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+	<title>User | Dashboard</title>
+	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+	<link rel="stylesheet" href="../../static/css/bootstrap.css">
+	<link rel="stylesheet" href="../../static/css/bootstrap-grid.css">
+	
+	<link rel="stylesheet" href="../../static/css/custom.css">
+	<!--===============================================================================================-->
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-primary">
+	<div class="container">
+		<a class="navbar-brand" th:href="@{/}">
+			<img src="../../static/img/logo.png" alt="Logo" style="width:40px">
+			Hizencode
+		</a>
+		
+		<button class="navbar-toggler collapsed" type="button"
+		        data-toggle="collapse" data-target="#navbarsExample05"
+		        aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		
+		<div class="navbar-collapse collapse " id="navbarsExample05" style="">
+			<ul class="navbar-nav ml-auto main-menu-nav
+					 d-flex justify-content-center align-items-center">
+				<li class="nav-item active">
+					<a class="nav-link" href="#">Project<span class="sr-only">(current)</span></a>
+				</li>
+				<li class="nav-item active">
+					<a class="nav-link" href="#">Courses<span class="sr-only">(current)</span></a>
+				</li>
+				<li class="nav-item active">
+					<a class="nav-link" href="#">Contacts<span class="sr-only">(current)</span></a>
+				</li>
+				
+				<div class="d-none d-md-block pr-4"></div>
+				
+				<div class="d-none d-md-block pr-4 border-left border-light" style="height: 30px"></div>
+				
+				<div class="d-sm-block d-md-none border-bottom border-light" style="width: 90%"></div>
+				
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" data-toggle="dropdown" th:href="@{/user-dashboard}"
+					   th:text ="${#authentication.getPrincipal().getEmail()}">Name
+					</a>
+					<div class="dropdown-menu">
+						<form th:action="@{/logout}" method="post">
+							<input class="dropdown-item" type="submit" value="Log out">
+						</form>
+					</div>
+				</li>
+			</ul>
+		
+		</div>
+	</div>
+</nav>
+
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+</body>
+</html>

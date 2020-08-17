@@ -46,9 +46,12 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserEntity> user = userRepository.findUserByUsername(username);
 
-        user.orElseThrow(() -> new UsernameNotFoundException("Not found: " + username));
+        if(user.isPresent()) {
+            return getUserPrincipal(user.get());
+        } else {
+            throw new UsernameNotFoundException("User not found: " + username);
+        }
 
-        return user.map(User::new).get();
     }
 
     @Transactional
@@ -77,6 +80,17 @@ public class UserService implements UserDetailsService {
                 userEntity.setRoles(Collections.singletonList(role)));
 
         userRepository.save(userEntity);
+    }
+
+    public UserPrincipal getUserPrincipal(UserEntity userEntity) {
+        return new UserPrincipal(userEntity.getUsername(),
+                userEntity.getPassword(),
+                userEntity.getEmail(),
+                userEntity.isActive(),
+                true,
+                true,
+                true,
+                userEntity.getAuthorities());
     }
 
     private boolean usernameOrEmailExists(String username, String email) {
