@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.logging.Logger;
 
 @Controller
@@ -44,7 +43,7 @@ public class RegistrationController {
         logger.info("Processing registration form for: " + userName);
 
         if (theBindingResult.hasErrors()){
-            logger.info(Arrays.toString(theBindingResult.getAllErrors().toArray()));
+            logger.info(theBindingResult.getAllErrors().toString());
             return "registration/registration-page";
         }
 
