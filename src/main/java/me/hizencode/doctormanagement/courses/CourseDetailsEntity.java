@@ -1,10 +1,9 @@
-package me.hizencode.doctormanagement.cources;
+package me.hizencode.doctormanagement.courses;
 
 import me.hizencode.doctormanagement.certificates.CertificateEntity;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(schema = "doctor_management", name = "courses_details")

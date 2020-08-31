@@ -1,4 +1,4 @@
-package me.hizencode.doctormanagement.cources;
+package me.hizencode.doctormanagement.courses;
 
 import javax.persistence.*;
 

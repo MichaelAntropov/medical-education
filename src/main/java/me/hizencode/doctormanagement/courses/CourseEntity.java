@@ -1,4 +1,4 @@
-package me.hizencode.doctormanagement.cources;
+package me.hizencode.doctormanagement.courses;
 
 import me.hizencode.doctormanagement.specialities.SpecialityEntity;
 
