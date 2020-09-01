@@ -3,7 +3,7 @@ package me.hizencode.doctormanagement.certificates;
 import javax.persistence.*;
 
 @Entity
-@Table(schema = "doctor_management", name = "certificates")
+@Table(schema = "doctor_management", name = "certificate")
 public class CertificateEntity {
 
     @Id

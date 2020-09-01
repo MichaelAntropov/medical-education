@@ -3,7 +3,7 @@ package me.hizencode.doctormanagement.courses;
 import javax.persistence.*;
 
 @Entity
-@Table(schema = "doctor_management", name = "courses_description")
+@Table(schema = "doctor_management", name = "course_description")
 public class CourseDescriptionEntity {
 
     @Id

@@ -3,7 +3,7 @@ package me.hizencode.doctormanagement.user.role;
 import javax.persistence.*;
 
 @Entity
-@Table(schema = "doctor_management", name = "roles")
+@Table(schema = "doctor_management", name = "role")
 public class RoleEntity {
 
     @Id

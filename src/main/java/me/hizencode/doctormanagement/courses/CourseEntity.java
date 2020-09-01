@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(schema = "doctor_management", name = "courses")
+@Table(schema = "doctor_management", name = "course")
 public class CourseEntity {
 
     @Id

@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(schema = "doctor_management", name = "users")
+@Table(schema = "doctor_management", name = "user")
 public class UserEntity {
 
     @Id
