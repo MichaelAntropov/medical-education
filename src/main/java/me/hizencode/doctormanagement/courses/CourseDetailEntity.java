@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Entity
 @Table(schema = "doctor_management", name = "course_detail")
-public class CourseDetailsEntity {
+public class CourseDetailEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,11 +29,11 @@ public class CourseDetailsEntity {
     private String author;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinTable(name = "certificates",
+    @JoinTable(name = "certificate",
             joinColumns = @JoinColumn(name = "id"))
     private CertificateEntity certificate;
 
-    public CourseDetailsEntity() {
+    public CourseDetailEntity() {
     }
 
     public int getId() {

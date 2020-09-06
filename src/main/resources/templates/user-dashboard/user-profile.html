@@ -72,7 +72,7 @@
                     </div>
                 </li>
 
-                <!-- Shown only to visitors users-->
+                <!-- Shown only to visitors -->
                 <li sec:authorize="!isAuthenticated()" class="nav-item active ">
                     <a class="nav-link" th:href="@{/login}">Sign in<span class="sr-only">(current)</span></a>
                 </li>
@@ -114,120 +114,229 @@
     <div class="container-fluid mt-5">
         <div class="card mb-5">
             <div class="card-body">
-                <form>
+                <form th:action="@{/user-dashboard/profile/save}" th:object="${profile}" method="post">
                     <!-- Name, Middle Name, Last Name  -->
                     <div class="form-row">
+                        <!--  First name    -->
                         <div class="col-md-4 mb-3">
                             <label for="firstName">First name*</label>
-                            <input type="text" class="form-control is-valid" id="firstName" required>
-                            <div class="valid-feedback">
+                            <input type="text" class="form-control" id="firstName"
+                                   th:field="${profile.firstName}"
+                                   th:classappend="${#fields.hasErrors() ? (#fields.hasErrors('firstName') ? 'is-invalid' : 'is-valid') : ''}">
+                            <div th:if="${#fields.hasErrors() && !#fields.hasErrors('firstName')}"
+                                 th:errors="${profile.firstName}" class="valid-feedback">
                                 Looks good!
                             </div>
+                            <div th:if="${#fields.hasErrors('firstName')}" th:errors="${profile.firstName}"
+                                 class="invalid-feedback">
+                                Invalid
+                            </div>
                         </div>
+                        <!--  Last name    -->
                         <div class="col-md-4 mb-3">
                             <label for="lastName">Last name*</label>
-                            <input type="text" class="form-control is-valid" id="lastName" required>
-                            <div class="valid-feedback">
+                            <input type="text" class="form-control" id="lastName"
+                                   th:field="${profile.lastName}"
+                                   th:classappend="${#fields.hasErrors() ? (#fields.hasErrors('lastName') ? 'is-invalid' : 'is-valid') : ''}">
+                            <div th:if="${#fields.hasErrors() && !#fields.hasErrors('lastName')}"
+                                 th:errors="${profile.lastName}" class="valid-feedback">
                                 Looks good!
                             </div>
+                            <div th:if="${#fields.hasErrors('lastName')}" th:errors="${profile.lastName}"
+                                 class="invalid-feedback">
+                                Invalid
+                            </div>
                         </div>
+                        <!--  Middle name    -->
                         <div class="col-md-4 mb-3">
                             <label for="middleName">Middle name</label>
-                            <input type="text" class="form-control is-valid" id="middleName" required>
-                            <div class="valid-feedback">
+                            <input type="text" class="form-control" id="middleName"
+                                   th:field="${profile.middleName}"
+                                   th:classappend="${#fields.hasErrors() ? (#fields.hasErrors('middleName') ? 'is-invalid' : 'is-valid') : ''}">
+                            <div th:if="${#fields.hasErrors() && !#fields.hasErrors('middleName')}"
+                                 th:errors="${profile.middleName}" class="valid-feedback">
                                 Looks good!
+                            </div>
+                            <div th:if="${#fields.hasErrors('middleName')}" th:errors="${profile.middleName}"
+                                 class="invalid-feedback">
+                                Invalid
                             </div>
                         </div>
                     </div>
                     <!-- Email, Phone, Birth Date -->
                     <div class="form-row">
+                        <!--  Email  -->
                         <div class="col-md-6 mb-3">
                             <label for="email">Email*</label>
-                            <input type="email" class="form-control is-invalid" id="email"
-                                   aria-describedby="validationServer03Feedback" required>
-                            <div id="emailFeedback" class="invalid-feedback">
-                                Please provide a valid email.
+                            <input disabled type="email" class="form-control" id="email"
+                                   th:value="${#authentication.getPrincipal().getEmail()}">
+                        </div>
+                        <!--  Phone  -->
+                        <div class="col-md-3 mb-3">
+                            <label for="phoneInput">Phone*</label>
+                            <div class="input-group">
+                                <!--   Input for user   -->
+                                <input type="tel" class="form-control" autocomplete="off" id="phoneInput"
+                                       th:value="${profile.phone}"
+                                       th:classappend="${#fields.hasErrors() ? (#fields.hasErrors('phone') ? 'is-invalid' : 'is-valid') : ''}">
+                                <label for="phone"></label>
+                                <!--   Phone field   -->
+                                <input hidden="hidden" id="phone" th:field="${profile.phone}" value="">
+                                <!--   Phone indicator   -->
+                                <div>
+                                    <p id="phoneResult" class="font-weight-light"></p>
+                                </div>
+
+                                <div th:if="${#fields.hasErrors() && !#fields.hasErrors('phone')}"
+                                     th:errors="${profile.phone}" class="valid-feedback">
+                                    Looks good!
+                                </div>
+                                <div th:if="${#fields.hasErrors('phone')}" th:errors="${profile.phone}"
+                                     class="invalid-feedback">
+                                    Invalid
+                                </div>
                             </div>
                         </div>
-
+                        <!--  Birth date  -->
                         <div class="col-md-3 mb-3">
-							<label for="phone">Phone</label>
-							<div class="input-group">
-								<input type="tel" class="form-control" autocomplete="off" id="phone">
-							</div>
-                        </div>
-
-                        <div class="col-md-3 mb-3">
-                            <label for="birthDate">Date</label>
+                            <label for="birthDate">Birthdate*</label>
                             <div class="input-group">
-                                <input class="form-control" type="date" value="2000-01-01" id="birthDate">
+                                <input class="form-control" type="date" id="birthDate"
+                                       th:field="${profile.birthDate}"
+                                       th:classappend="${#fields.hasErrors() ? (#fields.hasErrors('birthDate') ? 'is-invalid' : 'is-valid') : ''}">
+                                <div th:if="${#fields.hasErrors() && !#fields.hasErrors('birthDate')}"
+                                     th:errors="${profile.birthDate}" class="valid-feedback">
+                                    Looks good!
+                                </div>
+                                <div th:if="${#fields.hasErrors('birthDate')}" th:errors="${profile.birthDate}"
+                                     class="invalid-feedback">
+                                    Invalid
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-row mb-3">
-                        <div class="col"><hr></div>
+                        <div class="col">
+                            <hr>
+                        </div>
                     </div>
 
                     <!-- Country, Region/State, City -->
                     <div class="form-row">
+                        <!--  Country    -->
                         <div class="col mb-3">
                             <label for="country">Country*</label>
-                            <input type="text" class="form-control is-valid" id="country" required>
+                            <select class="custom-select" id="country" th:field="${profile.country}">
+                                <option value="" th:selected="${profile.getCountry() == null}">Country</option>
+                                <option th:each="country : ${countries}"
+                                        th:value="${country.getId()}"
+                                        th:text="${country.getCountryName()}"
+                                        th:selected="${profile.getCountry() != null} ? ${country.getId() == profile.getCountry().getId()}"
+                                ></option>
+                            </select>
                             <div class="valid-feedback">
                                 Looks good!
                             </div>
                         </div>
                     </div>
                     <div class="form-row">
+                        <!--  Region/state  -->
                         <div class="col mb-3">
                             <label for="region">Region/state</label>
-                            <input type="text" class="form-control is-valid" id="region">
-                            <div class="valid-feedback">
+                            <input type="text" class="form-control" id="region"
+                                   th:field="${profile.regionState}"
+                                   th:classappend="${#fields.hasErrors() ? (#fields.hasErrors('regionState') ? 'is-invalid' : 'is-valid') : ''}">
+                            <div th:if="${#fields.hasErrors() && !#fields.hasErrors('regionState')}"
+                                 th:errors="${profile.regionState}" class="valid-feedback">
                                 Looks good!
+                            </div>
+                            <div th:if="${#fields.hasErrors('regionState')}" th:errors="${profile.regionState}"
+                                 class="invalid-feedback">
+                                Invalid
                             </div>
                         </div>
                     </div>
                     <div class="form-row">
+                        <!--  City   -->
                         <div class="col mb-3">
                             <label for="city">City*</label>
-                            <input type="text" class="form-control is-valid" id="city" required>
-                            <div class="valid-feedback">
+                            <input type="text" class="form-control" id="city"
+                                   th:field="${profile.city}"
+                                   th:classappend="${#fields.hasErrors() ? (#fields.hasErrors('city') ? 'is-invalid' : 'is-valid') : ''}">
+                            <div th:if="${#fields.hasErrors() && !#fields.hasErrors('city')}"
+                                 th:errors="${profile.city}" class="valid-feedback">
                                 Looks good!
+                            </div>
+                            <div th:if="${#fields.hasErrors('city')}" th:errors="${profile.city}"
+                                 class="invalid-feedback">
+                                Invalid
                             </div>
                         </div>
                     </div>
 
                     <div class="form-row mb-3">
-                        <div class="col"><hr></div>
+                        <div class="col">
+                            <hr>
+                        </div>
                     </div>
 
                     <!-- Speciality, Workplace, Position -->
                     <div class="form-row">
+                        <!--  Speciality   -->
                         <div class="col mb-3">
                             <label for="speciality">Speciality*</label>
-                            <input type="text" class="form-control is-invalid" id="speciality"
-                                   aria-describedby="validationServer03Feedback" required>
-                            <div class="valid-feedback">
+                            <select class="custom-select" id="speciality" th:field="${profile.speciality}"
+                                    th:classappend="${#fields.hasErrors() ? (#fields.hasErrors('speciality') ? 'is-invalid' : 'is-valid') : ''}">
+                                <option value="" th:selected="${profile.getSpeciality() == null}">Speciality</option>
+                                <option th:each="speciality : ${specialities}"
+                                        th:value="${speciality.getId()}"
+                                        th:text="${speciality.getName()}"
+                                        th:selected="${profile.getSpeciality() != null} ? ${speciality.getId() == profile.getSpeciality().getId()}"
+                                ></option>
+                            </select>
+                            <div th:if="${#fields.hasErrors() && !#fields.hasErrors('speciality')}"
+                                 th:errors="${profile.speciality}" class="valid-feedback">
                                 Looks good!
+                            </div>
+                            <div th:if="${#fields.hasErrors('speciality')}" th:errors="${profile.speciality}"
+                                 class="invalid-feedback">
+                                Invalid
                             </div>
                         </div>
                     </div>
                     <div class="form-row">
+                        <!--  Workplace   -->
                         <div class="col mb-3">
                             <label for="workplace">Workplace*</label>
-                            <input type="text" class="form-control is-invalid" id="workplace"
-                                   aria-describedby="validationServer03Feedback" required>
-                            <div class="valid-feedback">
+                            <input type="text" class="form-control" id="workplace"
+                                   th:field="${profile.workplace}"
+                                   th:classappend="${#fields.hasErrors() ? (#fields.hasErrors('workplace') ? 'is-invalid' : 'is-valid') : ''}">
+                            <div th:if="${#fields.hasErrors() && !#fields.hasErrors('workplace')}"
+                                 th:errors="${profile.workplace}" class="valid-feedback">
                                 Looks good!
+                            </div>
+                            <div th:if="${#fields.hasErrors('workplace')}" th:errors="${profile.workplace}"
+                                 class="invalid-feedback">
+                                Invalid
                             </div>
                         </div>
                     </div>
                     <div class="form-row">
+                        <!--  Position   -->
                         <div class="col mb-3">
                             <label for="position">Position*</label>
-                            <input type="text" class="form-control is-invalid" id="position"
-                                   aria-describedby="validationServer03Feedback" required>
+                            <input type="text" class="form-control" id="position"
+                                   th:field="${profile.position}"
+                                   th:classappend="${#fields.hasErrors() ? (#fields.hasErrors('position') ? 'is-invalid' : 'is-valid') : ''}">
+                            <div th:if="${#fields.hasErrors() && !#fields.hasErrors('position')}"
+                                 th:errors="${profile.position}" class="valid-feedback">
+                                Looks good!
+                            </div>
+                            <div th:if="${#fields.hasErrors('position')}" th:errors="${profile.position}"
+                                 class="invalid-feedback">
+                                Invalid
+                            </div>
                             <div class="valid-feedback">
                                 Looks good!
                             </div>
@@ -235,6 +344,7 @@
                     </div>
 
                     <!-- Terms and conditions -->
+                    <!--                    -->
                     <button class="btn btn-primary" type="submit">Save</button>
                 </form>
             </div>
@@ -272,10 +382,30 @@
         document.getElementById("sidenav-overlay").style.display = "none";
     }
 
-    let input = document.querySelector("#phone");
-    window.intlTelInput(input, {
+    let phoneInput = document.querySelector("#phoneInput");
+    let phoneResult = document.querySelector("#phoneResult");
+
+    let iti = window.intlTelInput(phoneInput, {
+        nationalMode: true,
+        utilsScript: "../../static/js/utils.js?1590403638580" // just for formatting/placeholders etc
     });
-    window.intlTelInputGlobals.loadUtils("../../static/js/utils.js");
+
+    let handleChange = function () {
+        let text;
+        if (iti.isValidNumber()) {
+            text = "Number: " + iti.getNumber();
+            document.getElementById("phone").value = iti.getNumber();
+        } else {
+            text = "Please enter a valid number";
+        }
+        let textNode = document.createTextNode(text);
+        phoneResult.innerHTML = "";
+        phoneResult.appendChild(textNode);
+    };
+
+    // listen to "keyup", but also "change" to update when the user selects a country
+    phoneInput.addEventListener('change', handleChange);
+    phoneInput.addEventListener('keyup', handleChange);
 </script>
 
 </body>

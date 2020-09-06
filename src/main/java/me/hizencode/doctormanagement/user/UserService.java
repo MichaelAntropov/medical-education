@@ -1,10 +1,11 @@
 package me.hizencode.doctormanagement.user;
 
 import me.hizencode.doctormanagement.registration.UserDto;
+import me.hizencode.doctormanagement.user.profile.UserProfileAlreadyExistsException;
+import me.hizencode.doctormanagement.user.profile.UserProfileService;
 import me.hizencode.doctormanagement.user.role.RoleEntity;
 import me.hizencode.doctormanagement.user.role.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,14 +19,21 @@ import java.util.logging.Logger;
 @Service
 public class UserService implements UserDetailsService {
 
+    /*Fields*/
+    /*================================================================================================================*/
+
     private UserRepository userRepository;
 
     private RoleRepository roleRepository;
+
+    private UserProfileService userProfileService;
 
     private PasswordEncoder passwordEncoder;
 
     private Logger logger = Logger.getLogger(getClass().getName());
 
+    /*Setters*/
+    /*================================================================================================================*/
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -41,12 +49,19 @@ public class UserService implements UserDetailsService {
         this.roleRepository = roleRepository;
     }
 
+    @Autowired
+    public void setUserProfileService(UserProfileService userProfileService) {
+        this.userProfileService = userProfileService;
+    }
+
+    /*Methods*/
+    /*================================================================================================================*/
     @Override
     @Transactional
     public UserPrincipal loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<UserEntity> user = userRepository.findUserEntityByEmail(email);
 
-        if(user.isPresent()) {
+        if (user.isPresent()) {
             return getUserPrincipal(user.get());
         } else {
             throw new UsernameNotFoundException("User not found: " + email);
@@ -55,7 +70,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void registerNewUserAccount(UserDto userDto) throws UserAlreadyExistException {
+    public void registerNewUserAccount(UserDto userDto) throws UserAlreadyExistException, UserProfileAlreadyExistsException {
         if (usernameOrEmailExists(userDto.getUsername(), userDto.getEmail())) {
 
             throw new UserAlreadyExistException("There is an account with that username/email address: "
@@ -80,10 +95,12 @@ public class UserService implements UserDetailsService {
                 userEntity.setRoles(Collections.singletonList(role)));
 
         userRepository.save(userEntity);
+
+        userProfileService.createUserProfileForUserWithId(userEntity.getId());
     }
 
     public UserPrincipal getUserPrincipal(UserEntity userEntity) {
-        return new UserPrincipal(userEntity.getUsername(),
+        return new UserPrincipal(userEntity.getId(), userEntity.getUsername(),
                 userEntity.getPassword(),
                 userEntity.getEmail(),
                 userEntity.isActive(),

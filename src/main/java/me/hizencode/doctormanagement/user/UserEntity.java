@@ -31,20 +31,11 @@ public class UserEntity {
     private boolean active;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    @JoinTable(name = "users_roles",
+    @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Collection<RoleEntity> roles;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    @JoinTable(name = "courses",
-            joinColumns = @JoinColumn(name = "id"))
-    private Collection<CourseEntity> courses;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    @JoinTable(name = "certificates",
-            joinColumns = @JoinColumn(name = "id"))
-    private Collection<CertificateEntity> certificates;
 
     public UserEntity() {
     }
@@ -108,21 +99,5 @@ public class UserEntity {
 
     public void setRoles(Collection<RoleEntity> roles) {
         this.roles = roles;
-    }
-
-    public Collection<CourseEntity> getCourses() {
-        return courses;
-    }
-
-    public void setCourses(Collection<CourseEntity> courses) {
-        this.courses = courses;
-    }
-
-    public Collection<CertificateEntity> getCertificates() {
-        return certificates;
-    }
-
-    public void setCertificates(Collection<CertificateEntity> certificates) {
-        this.certificates = certificates;
     }
 }

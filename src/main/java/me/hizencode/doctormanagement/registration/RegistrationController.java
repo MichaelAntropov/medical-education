@@ -2,6 +2,7 @@ package me.hizencode.doctormanagement.registration;
 
 import me.hizencode.doctormanagement.user.UserAlreadyExistException;
 import me.hizencode.doctormanagement.user.UserService;
+import me.hizencode.doctormanagement.user.profile.UserProfileAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -54,6 +55,10 @@ public class RegistrationController {
             model.addAttribute("message", "An account with this username/email already exists.");
             model.addAttribute("user", new UserDto());
             return "registration/registration-page";
+        } catch (UserProfileAlreadyExistsException e) {
+            logger.warning(e.getMessage());
+            model.addAttribute("message", "Can not register the user");
+            model.addAttribute("user", new UserDto());
         }
 
         return "registration/registration-success";

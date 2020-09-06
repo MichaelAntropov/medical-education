@@ -17,17 +17,17 @@ public class CourseEntity {
     private String name;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinTable(name = "courses_details",
+    @JoinTable(name = "course_detail",
             joinColumns = @JoinColumn(name = "id"))
-    private CourseDetailsEntity courseDetails;
+    private CourseDetailEntity courseDetails;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinTable(name = "courses_description",
+    @JoinTable(name = "course_description",
             joinColumns = @JoinColumn(name = "id"))
     private CourseDescriptionEntity courseDescription;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "courses_specialities",
+    @JoinTable(name = "course_speciality",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "speciality_id"))
     private List<SpecialityEntity> specialities;
@@ -51,11 +51,11 @@ public class CourseEntity {
         this.name = name;
     }
 
-    public CourseDetailsEntity getCourseDetails() {
+    public CourseDetailEntity getCourseDetails() {
         return courseDetails;
     }
 
-    public void setCourseDetails(CourseDetailsEntity courseDetails) {
+    public void setCourseDetails(CourseDetailEntity courseDetails) {
         this.courseDetails = courseDetails;
     }
 
