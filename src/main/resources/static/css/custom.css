@@ -1,4 +1,8 @@
-html,
+html{
+    --lh: 1.5rem;
+    line-height: var(--lh);
+}
+
 body {
     height: 100%;
 }
@@ -29,27 +33,33 @@ body {
 }
 
 .main-background {
-    width: 100%;
-    height: auto;
-    opacity: 0.85;
-    z-index: -1;
-    background-image: url("../img/background.jpg");
-    background-repeat: no-repeat;
-    background-position: center top;
+    /* Use "linear-gradient" to add a darken background effect to the image (photographer.jpg). This will make the text easier to read */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../img/background.jpg");
 
-    box-shadow: inset 0 0 0 1000px rgba(0,0,0,0.4);
+    /* Set a specific height */
+    min-height: 800px;
+    height: 94vh;
+
+    /* Position and center the image to scale nicely on all screens */
+    background-position: top;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
 }
 
 .form-background {
-    width: 100%;
-    height: auto;
-    opacity: 0.85;
-    z-index: -1;
-    background-image: url("../img/background.jpg");
-    background-repeat: no-repeat;
-    background-position: center top;
+    /* Use "linear-gradient" to add a darken background effect to the image (photographer.jpg). This will make the text easier to read */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../img/background.jpg");
 
-    box-shadow: inset 0 0 0 1000px rgba(0,0,0,.2);
+    /* Set a specific height */
+    min-height: 800px;
+    height: 94vh;
+
+    /* Position and center the image to scale nicely on all screens */
+    background-position: top;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
 }
 
 .form-signin .form-control {
@@ -95,7 +105,7 @@ body {
     width: 0; /* 0 width - change this with JavaScript */
     visibility: hidden;/* Change this with JavaScript */
     position: fixed; /* Stay in place */
-    z-index: 2; /* Stay on top */
+    z-index: 5; /* Stay on top */
     top: 0; /* Stay at the top */
     left: 0;
     overflow-x: hidden; /* Disable horizontal scroll */
@@ -116,7 +126,7 @@ body {
     height: 100vh;
     width: 100vw;
     position: fixed;
-    z-index: 1;
+    z-index: 4;
     top: 0;
     left: 0;
     background-color: #111;
@@ -133,7 +143,7 @@ body {
     .iti__flag {background-image: url("../../static/img/flags@2x.png");}
 }
 
-/*Workaround for bootstrap*/
+/*For tel input. Workaround for bootstrap*/
 .intl-tel-input {
     display: table-cell;
 }
@@ -156,4 +166,20 @@ body {
 
 .iti {
     width: 100%;
+}
+/*Text overflow*/
+.overflow {
+    --max-lines: 3;
+    position: relative;
+    max-height: calc(var(--lh) * var(--max-lines));
+    overflow: hidden;
+    padding-right: 0; /* space for ellipsis */
+}
+
+/*Course thumbnail*/
+.course-thumbnail {
+    float: left;
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
 }

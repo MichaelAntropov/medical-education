@@ -1,7 +1,5 @@
 package me.hizencode.doctormanagement.user;
 
-import me.hizencode.doctormanagement.certificates.CertificateEntity;
-import me.hizencode.doctormanagement.courses.CourseEntity;
 import me.hizencode.doctormanagement.user.role.RoleEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -3,6 +3,7 @@ package me.hizencode.doctormanagement.courses;
 import me.hizencode.doctormanagement.specialities.SpecialityEntity;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -17,14 +18,18 @@ public class CourseEntity {
     private String name;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinTable(name = "course_detail",
-            joinColumns = @JoinColumn(name = "id"))
+    @JoinColumn(name = "course_details_id", referencedColumnName = "id")
     private CourseDetailEntity courseDetails;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinTable(name = "course_description",
-            joinColumns = @JoinColumn(name = "id"))
+    @JoinColumn(name = "course_description_id", referencedColumnName = "id")
     private CourseDescriptionEntity courseDescription;
+
+    @Column(name = "creation_date")
+    private Date creationDate;
+
+    @Column(name = "edit_date")
+    private Date editDate;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "course_speciality",
@@ -51,6 +56,22 @@ public class CourseEntity {
         this.name = name;
     }
 
+    public Date getEditDate() {
+        return editDate;
+    }
+
+    public void setEditDate(Date editDate) {
+        this.editDate = editDate;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
     public CourseDetailEntity getCourseDetails() {
         return courseDetails;
     }
@@ -73,5 +94,16 @@ public class CourseEntity {
 
     public void setSpecialities(List<SpecialityEntity> specialities) {
         this.specialities = specialities;
+    }
+
+    @Override
+    public String toString() {
+        return "CourseEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", courseDetails=" + courseDetails +
+                ", courseDescription=" + courseDescription +
+                ", specialities=" + specialities +
+                '}';
     }
 }

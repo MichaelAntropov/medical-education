@@ -1,6 +1,7 @@
 package me.hizencode.doctormanagement.courses;
 
 import me.hizencode.doctormanagement.certificates.CertificateEntity;
+import me.hizencode.doctormanagement.image.ImageEntity;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -13,8 +14,9 @@ public class CourseDetailEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "image_url")
-    private String imageUrl;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "image", referencedColumnName = "id")
+    private ImageEntity image;
 
     @Column(name = "video_url")
     private String videoUrl;
@@ -29,8 +31,7 @@ public class CourseDetailEntity {
     private String author;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinTable(name = "certificate",
-            joinColumns = @JoinColumn(name = "id"))
+    @JoinColumn(name = "certificate")
     private CertificateEntity certificate;
 
     public CourseDetailEntity() {
@@ -44,12 +45,12 @@ public class CourseDetailEntity {
         this.id = id;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public ImageEntity getImage() {
+        return image;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImage(ImageEntity image) {
+        this.image = image;
     }
 
     public String getVideoUrl() {
@@ -90,5 +91,18 @@ public class CourseDetailEntity {
 
     public void setCertificate(CertificateEntity certificate) {
         this.certificate = certificate;
+    }
+
+    @Override
+    public String toString() {
+        return "CourseDetailEntity{" +
+                "id=" + id +
+                ", image=" + image +
+                ", videoUrl='" + videoUrl + '\'' +
+                ", startCourse=" + startCourse +
+                ", endCourse=" + endCourse +
+                ", author='" + author + '\'' +
+                ", certificate=" + certificate +
+                '}';
     }
 }

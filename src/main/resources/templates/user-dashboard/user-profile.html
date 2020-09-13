@@ -94,6 +94,8 @@
             <a href="#" class="list-group-item list-group-item-action bg-light">My profile</a>
             <a href="#" class="list-group-item list-group-item-action bg-light">My courses</a>
             <a href="#" class="list-group-item list-group-item-action bg-light">My certificates</a>
+            <a sec:authorize="hasRole('ADMIN')" href="/user-dashboard/manage-courses"
+               class="list-group-item list-group-item-action bg-light">Manage courses</a>
         </div>
     </div>
 
@@ -104,6 +106,8 @@
             <a href="#" class="list-group-item list-group-item-action bg-light">My profile</a>
             <a href="#" class="list-group-item list-group-item-action bg-light">My courses</a>
             <a href="#" class="list-group-item list-group-item-action bg-light">My certificates</a>
+            <a sec:authorize="hasRole('ADMIN')" href="/user-dashboard/manage-courses"
+               class="list-group-item list-group-item-action bg-light">Manage courses</a>
         </div>
     </div>
 
@@ -364,7 +368,7 @@
 
 <script src="../../static/js/intlTelInput.js"></script>
 
-<!-- Menu Toggle Script -->
+<!-- Menu Toggle and tel input Script -->
 <script type="text/javascript">
 
     function openNav() {

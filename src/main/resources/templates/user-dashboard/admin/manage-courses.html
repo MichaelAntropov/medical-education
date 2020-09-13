@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <title>User | Dashboard</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="../../../static/css/bootstrap.css">
+    <link rel="stylesheet" href="../../../static/css/bootstrap-grid.css">
+
+    <link rel="stylesheet" href="../../../static/css/custom.css">
+
+    <link rel="stylesheet" href="../../../static/css/intlTelInput.css">
+    <!--===============================================================================================-->
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-primary">
+
+    <div class="container flex-row">
+        <div class="btn-lg text-light text-capitalize d-md-none" type="button" onclick="openNav()">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-menu-app" fill="currentColor"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M0 1.5A1.5 1.5 0 0 1 1.5 0h2A1.5 1.5 0 0 1 5 1.5v2A1.5 1.5 0 0 1 3.5 5h-2A1.5 1.5 0 0 1 0 3.5v-2zM1.5 1a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-2zM14 7H2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM2 6a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H2z"/>
+                <path fill-rule="evenodd"
+                      d="M15 11H1v-1h14v1zM2 12.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+        </div>
+
+        <a class="navbar-brand" th:href="@{/}">
+            <img src="../../../static/img/logo.png" alt="Logo" style="width:40px">
+            Hizencode
+        </a>
+
+        <button class="navbar-toggler collapsed" type="button"
+                data-toggle="collapse" data-target="#navbarsExample05"
+                aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="navbar-collapse collapse " id="navbarsExample05" style="">
+            <ul class="navbar-nav ml-auto main-menu-nav
+					 d-flex justify-content-center align-items-center">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Project<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Courses<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Contacts<span class="sr-only">(current)</span></a>
+                </li>
+
+                <div class="d-none d-md-block pr-4"></div>
+
+                <div class="d-none d-md-block pr-4 border-left border-light" style="height: 30px"></div>
+
+                <div class="d-sm-block d-md-none border-bottom border-light" style="width: 90%"></div>
+
+                <!-- Shown only to authorized users-->
+                <li sec:authorize="isAuthenticated()" class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" th:href="@{/templates/user-dashboard}"
+                       th:text="${#authentication.getPrincipal().getEmail()}">Name
+                    </a>
+                    <div class="dropdown-menu">
+                        <form th:action="@{/logout}" method="post">
+                            <input class="dropdown-item" type="submit" value="Log out">
+                        </form>
+                    </div>
+                </li>
+
+                <!-- Shown only to visitors -->
+                <li sec:authorize="!isAuthenticated()" class="nav-item active ">
+                    <a class="nav-link" th:href="@{/templates/login}">Sign in<span class="sr-only">(current)</span></a>
+                </li>
+
+                <li sec:authorize="!isAuthenticated()" class="nav-item active">
+                    <a class="nav-link" th:href="@{/templates/registration}">Sign up<span
+                            class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+<div class="d-flex">
+
+    <!-- Sidebar -->
+    <div class="sidebar-wrapper bg-light border-right d-none d-md-block">
+        <div class="list-group list-group-flush">
+            <a href="#" class="list-group-item list-group-item-action bg-light">My profile</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">My courses</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">My certificates</a>
+            <a sec:authorize="hasRole('ADMIN')" href="/user-dashboard/manage-courses"
+               class="list-group-item list-group-item-action bg-light">Manage courses</a>
+        </div>
+    </div>
+
+    <!-- Sidebar for mobile -->
+    <div id="sidenav" class="sidenav bg-light border-right d-md-none">
+        <a href="#" class="btn-close" onclick="closeNav()">&times;</a>
+        <div class="list-group list-group-flush">
+            <a href="#" class="list-group-item list-group-item-action bg-light">My profile</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">My courses</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">My certificates</a>
+            <a sec:authorize="hasRole('ADMIN')" href="/user-dashboard/manage-courses"
+               class="list-group-item list-group-item-action bg-light">Manage courses</a>
+        </div>
+    </div>
+
+    <!-- Dark Overlay element -->
+    <div id="sidenav-overlay" class="sidenav-overlay  d-md-none"></div>
+
+    <!-- Page Content -->
+    <div class="container-fluid mt-5">
+        <div class="card mb-5">
+            <div class="card-body">
+
+                <div class="container-fluid">
+                    <!-- Search courses -->
+                    <form th:action="@{/user-dashboard/manage-courses/search}" th:object="${searchCourses}"
+                          method="post">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="input-group mb-3">
+                                    <!-- Search field -->
+                                    <input type="text" class="form-control" placeholder="Search course"
+                                           aria-label="Search course"
+                                           th:field="*{searchText}" th:value="*{searchText}">
+                                    <div class="input-group-append">
+                                        <!-- Search button -->
+                                        <button class="btn btn-outline-primary" type="submit">Search</button>
+                                        <!-- Filter button -->
+                                        <button type="button" class="btn btn-outline-primary dropdown-toggle"
+                                                data-toggle="collapse" aria-pressed="false" data-target="#filter">
+                                            Filter
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Add course -->
+                        <div class="row">
+                            <div class="col">
+                                <a type="button" class="btn btn-primary"
+                                   th:href="@{/user-dashboard/manage-courses/create}">Add course +</a>
+                            </div>
+                        </div>
+                        <!-- Filter menu -->
+                        <div class="row">
+                            <div class="col">
+                                <div class="collapse" id="filter">
+                                    <div class="card m-3 p-3">
+                                        <h5 class="text">Filter menu</h5>
+                                        <h6 class="text">Specialities</h6>
+                                        <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+                                            <div class="col text-truncate" th:each="specialitiy : ${specialities}">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input id="checkbox" th:id="${specialitiy.getId()}" type="checkbox"
+                                                           class="custom-control-input"
+                                                           th:field="*{chosenSpecialities}"
+                                                           th:value="${specialitiy.getId()}">
+                                                    <label for="checkbox" class="custom-control-label"
+                                                           th:for="${specialitiy.getId()}"
+                                                           th:text="${specialitiy.getName()}"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- Courses in pages -->
+                    <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+                        <div class="card d-flex m-3" style="max-width: 18rem;"
+                             th:each="course : ${coursePage}">
+                            <img class="card-img-top course-thumbnail" alt="Course image" src="#"
+                                 th:if="${course.getCourseDetails().getImage()} != null"
+                                 th:src="@{'/course/image/' + ${course.getCourseDetails().getImage().getId()}}">
+                            <div class="card-body">
+                                <h5 class="card-title text-truncate" th:text="${course.getName()}">Course title</h5>
+                                <p class="card-text overflow" th:text="${course.getCourseDescription().getText()}">
+                                    Some quick example text of course and make up the bulk of the card's content.
+                                    Very huge chunk of text to test custom overflow.
+                                </p>
+                                <form th:action="@{/user-dashboard/manage-courses/edit}" method="post">
+                                    <input type="hidden" aria-label="course id" name="courseId"
+                                           th:value="${course.getId()}">
+                                    <button class="btn btn-primary" type="submit">
+                                        Edit
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+
+<!-- Menu Toggle Script -->
+<script type="text/javascript">
+
+    function openNav() {
+        document.getElementById("sidenav").style.visibility = "visible";
+        document.getElementById("sidenav").style.width = "250px";
+
+        document.getElementById("sidenav-overlay").style.display = "block";
+    }
+
+    /* Set the width of the side navigation to 0 */
+    function closeNav() {
+        document.getElementById("sidenav").style.width = "0px";
+        document.getElementById("sidenav").style.visibility = "hidden";
+
+        document.getElementById("sidenav-overlay").style.display = "none";
+    }
+</script>
+</body>
+</html>
