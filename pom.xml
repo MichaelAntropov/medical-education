@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>me.hizencode</groupId>
-	<artifactId>doctor-management</artifactId>
+	<artifactId>medical-education</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>doctor-management</name>
+	<name>MedicalEducation</name>
 	<description>Tutoring web-site for doctors</description>
 
 	<properties>
