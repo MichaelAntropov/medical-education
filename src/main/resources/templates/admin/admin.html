@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Admin Dashboard</title>
+</head>
+<body>
+	<h2>Welcome admin!</h2>
+	
+	<hr>
+	
+	<form th:action="@{/logout}" method="post">
+		<input type="submit" value="Log out" />
+	</form>
+</body>
+</html>
