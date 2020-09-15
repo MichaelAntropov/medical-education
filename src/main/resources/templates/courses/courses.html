@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
- <head>
-    <title>Sign in</title>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <title>User | Dashboard</title>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -9,12 +12,15 @@
     <link rel="stylesheet" href="../../static/css/bootstrap-grid.css">
 
     <link rel="stylesheet" href="../../static/css/custom.css">
+
+    <link rel="stylesheet" href="../../static/css/intlTelInput.css">
     <!--===============================================================================================-->
 </head>
 <body>
-
 <nav class="navbar navbar-expand-md navbar-dark bg-primary">
-    <div class="container">
+
+    <div class="container flex-row">
+
         <a class="navbar-brand" th:href="@{/}">
             <img src="../../static/img/logo.png" alt="Logo" style="width:40px">
             Hizencode
@@ -28,7 +34,7 @@
 
         <div class="navbar-collapse collapse " id="navbarsExample05" style="">
             <ul class="navbar-nav ml-auto main-menu-nav
-				 d-flex justify-content-center align-items-center">
+					 d-flex justify-content-center align-items-center">
                 <li class="nav-item active">
                     <a class="nav-link" href="#">Project<span class="sr-only">(current)</span></a>
                 </li>
@@ -45,7 +51,7 @@
 
                 <div class="d-sm-block d-md-none border-bottom border-light" style="width: 90%"></div>
 
-                <!--                Shown only to authorized users-->
+                <!-- Shown only to authorized users-->
                 <li sec:authorize="isAuthenticated()" class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" th:href="@{/user-dashboard}"
                        th:text="${#authentication.getPrincipal().getEmail()}">Name
@@ -57,13 +63,14 @@
                     </div>
                 </li>
 
-                <!--                Shown only to visitors users-->
+                <!-- Shown only to visitors -->
                 <li sec:authorize="!isAuthenticated()" class="nav-item active ">
                     <a class="nav-link" th:href="@{/login}">Sign in<span class="sr-only">(current)</span></a>
                 </li>
 
                 <li sec:authorize="!isAuthenticated()" class="nav-item active">
-                    <a class="nav-link" th:href="@{/registration}">Sign up<span class="sr-only">(current)</span></a>
+                    <a class="nav-link" th:href="@{/registration}">Sign up<span
+                            class="sr-only">(current)</span></a>
                 </li>
             </ul>
 
@@ -71,10 +78,88 @@
     </div>
 </nav>
 
-<div>
+<div class="d-flex ">
 
+    <!-- Page Content -->
+    <div class="container-fluid mt-5 bg-light">
+        <div  class="card mb-5" style="min-height: 85vh">
+            <div class="card-body">
+
+                <!-- Courses in pages -->
+                <div class="container flex-xl-row mt-5">
+
+                    <!-- Search courses -->
+                    <form th:action="@{/courses/search}" th:object="${searchCourses}"
+                          method="post">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="input-group mb-3">
+                                    <!-- Search field -->
+                                    <input type="text" class="form-control" placeholder="Search course"
+                                           aria-label="Search course"
+                                           th:field="*{searchText}" th:value="*{searchText}">
+                                    <div class="input-group-append">
+                                        <!-- Search button -->
+                                        <button class="btn btn-outline-primary" type="submit">Search</button>
+                                        <!-- Filter button -->
+                                        <button type="button" class="btn btn-outline-primary dropdown-toggle"
+                                                data-toggle="collapse" aria-pressed="false" data-target="#filter">
+                                            Filter
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filter menu -->
+                        <div class="row">
+                            <div class="col">
+                                <div class="collapse" id="filter">
+                                    <div class="card m-3 p-3">
+                                        <h5 class="text">Filter menu</h5>
+                                        <h6 class="text">Specialities</h6>
+                                        <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+                                            <div class="col text-truncate" th:each="specialitiy : ${specialities}">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input id="checkbox" th:id="${specialitiy.getId()}" type="checkbox"
+                                                           class="custom-control-input"
+                                                           th:field="*{chosenSpecialities}"
+                                                           th:value="${specialitiy.getId()}">
+                                                    <label for="checkbox" class="custom-control-label"
+                                                           th:for="${specialitiy.getId()}"
+                                                           th:text="${specialitiy.getName()}"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+
+                        <!-- Course card -->
+                        <a class="card d-flex m-3 course-card text-dark" style=" max-width: 16rem;"
+                           th:each="course : ${coursePage}"
+                           th:href="@{'/course/' + ${course.getId()}}">
+                            <img class="card-img-top course-thumbnail" alt="Course image" src="#"
+                                 th:if="${course.getCourseDetails().getImage()} != null"
+                                 th:src="@{'/course/image/' + ${course.getCourseDetails().getImage().getId()}}">
+                            <div class="card-body">
+                                <h5 class="card-title text-truncate" th:text="${course.getName()}">Course title</h5>
+                                <p class="card-text overflow" th:text="${course.getCourseDescription().getText()}">
+                                    Some quick example text of course and make up the bulk of the card's content.
+                                    Very huge chunk of text to test custom overflow.
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous"></script>
@@ -84,5 +169,6 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
         integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
         crossorigin="anonymous"></script>
+
 </body>
 </html>

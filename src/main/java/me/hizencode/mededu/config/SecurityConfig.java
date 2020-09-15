@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .usernameParameter("email")
                 .loginProcessingUrl("/login-process")
                 .permitAll()
-                .defaultSuccessUrl("/user-dashboard/profile")
+                .defaultSuccessUrl("/courses")
                 .and()
                 .logout()
                 .logoutUrl("/logout")

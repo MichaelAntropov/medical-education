@@ -183,3 +183,13 @@ body {
     height: 200px;
     object-fit: cover;
 }
+
+/*Course card*/
+.course-card a:hover, a:visited, a:link, a:active
+{
+    text-decoration: none;
+}
+
+.course-card:hover {
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
