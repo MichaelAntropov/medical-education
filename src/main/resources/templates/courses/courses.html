@@ -82,7 +82,7 @@
 
     <!-- Page Content -->
     <div class="container-fluid mt-5 bg-light">
-        <div  class="card mb-5" style="min-height: 85vh">
+        <div class="card mb-5" style="min-height: 85vh">
             <div class="card-body">
 
                 <div class="container flex-xl-row mt-5">
@@ -136,10 +136,10 @@
                         </div>
                     </form>
 
-                    <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+                    <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-3 row-cols-xl-4 mr-0">
 
                         <!-- Course card -->
-                        <a class="card d-flex m-3 course-card text-dark" style=" max-width: 16rem;"
+                        <a class="card d-flex m-3 course-card text-dark"
                            th:each="course : ${coursePage}"
                            th:href="@{'/courses/course' + ${course.getId()}}">
                             <img class="card-img-top course-thumbnail" alt="Course image" src="#"
