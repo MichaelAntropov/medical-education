@@ -1,4 +1,4 @@
-package me.hizencode.mededu.dashboard.admin;
+package me.hizencode.mededu.dashboard.admin.dto;
 
 import me.hizencode.mededu.specialities.SpecialityEntity;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 
-public class CourseDto {
+public class AdminCourseDto {
 
     @Min(0)
     @Max(Integer.MAX_VALUE)
@@ -41,7 +41,7 @@ public class CourseDto {
 
     private boolean isCertificateAvailable;
 
-    public CourseDto() {
+    public AdminCourseDto() {
     }
 
     public Integer getCourseId() {

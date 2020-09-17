@@ -1,18 +1,18 @@
-package me.hizencode.mededu.dashboard.admin;
+package me.hizencode.mededu.dashboard.admin.dto;
 
 import me.hizencode.mededu.specialities.SpecialityEntity;
 
 import javax.validation.constraints.Size;
 import java.util.List;
 
-public class SearchCoursesDto {
+public class AdminSearchCoursesDto {
 
     @Size(max = 128, message = "Max 512 characters")
     private String searchText;
 
     private List<SpecialityEntity> chosenSpecialities;
 
-    public SearchCoursesDto() {
+    public AdminSearchCoursesDto() {
 
     }
 

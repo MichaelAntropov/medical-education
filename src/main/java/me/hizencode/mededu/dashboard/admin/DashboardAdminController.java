@@ -4,6 +4,8 @@ import me.hizencode.mededu.courses.CourseDescriptionEntity;
 import me.hizencode.mededu.courses.CourseDetailEntity;
 import me.hizencode.mededu.courses.CourseEntity;
 import me.hizencode.mededu.courses.CourseService;
+import me.hizencode.mededu.dashboard.admin.dto.AdminCourseDto;
+import me.hizencode.mededu.dashboard.admin.dto.AdminSearchCoursesDto;
 import me.hizencode.mededu.image.ImageEntity;
 import me.hizencode.mededu.specialities.SpecialityEntity;
 import me.hizencode.mededu.specialities.SpecialityService;
@@ -57,7 +59,7 @@ public class DashboardAdminController {
         model.addAttribute("specialities", specialities);
 
         //Specialities for filter option
-        SearchCoursesDto searchCourses = new SearchCoursesDto();
+        AdminSearchCoursesDto searchCourses = new AdminSearchCoursesDto();
         model.addAttribute("searchCourses", searchCourses);
 
         //Fetch 10 courses by name
@@ -70,7 +72,7 @@ public class DashboardAdminController {
     }
 
     @PostMapping("/user-dashboard/manage-courses/search")
-    private String searchCourses(@ModelAttribute(name = "searchCourses") @Valid SearchCoursesDto searchCoursesDto,
+    private String searchCourses(@ModelAttribute(name = "searchCourses") @Valid AdminSearchCoursesDto searchCoursesDto,
                                  BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "redirect:/user-dashboard/manage-courses";
@@ -87,7 +89,7 @@ public class DashboardAdminController {
         model.addAttribute("specialities", specialities);
 
         //Set values in search and filter for filter option
-        SearchCoursesDto searchCourses = new SearchCoursesDto();
+        AdminSearchCoursesDto searchCourses = new AdminSearchCoursesDto();
         searchCourses.setChosenSpecialities(searchCoursesDto.getChosenSpecialities());
         searchCourses.setSearchText(searchCoursesDto.getSearchText());
 
@@ -104,14 +106,14 @@ public class DashboardAdminController {
         ArrayList<SpecialityEntity> specialities = specialityService.getAllSpecialities();
         model.addAttribute("specialities", specialities);
 
-        CourseDto course = new CourseDto();
+        AdminCourseDto course = new AdminCourseDto();
         model.addAttribute("course", course);
 
         return "user-dashboard/admin/create-course";
     }
 
     @PostMapping("/user-dashboard/manage-courses/create/save")
-    private String createSaveCourse(@ModelAttribute(name = "course") @Valid CourseDto course,
+    private String createSaveCourse(@ModelAttribute(name = "course") @Valid AdminCourseDto course,
                                     @RequestParam("image") MultipartFile image) {
 
         CourseDescriptionEntity courseDescriptionEntity = new CourseDescriptionEntity();
@@ -164,7 +166,7 @@ public class DashboardAdminController {
         model.addAttribute("specialities", specialities);
 
         CourseEntity courseEntity = courseOptional.get();
-        CourseDto course = new CourseDto();
+        AdminCourseDto course = new AdminCourseDto();
 
         course.setName(courseEntity.getName());
         course.setChosenSpecialities(courseEntity.getSpecialities());
@@ -190,7 +192,7 @@ public class DashboardAdminController {
     }
 
     @PostMapping("/user-dashboard/manage-courses/edit/save")
-    private String editSaveCourse(@ModelAttribute(name = "course") @Valid CourseDto course,
+    private String editSaveCourse(@ModelAttribute(name = "course") @Valid AdminCourseDto course,
                                   @RequestParam("image") MultipartFile image) {
 
         Optional<CourseEntity> courseOptional = courseService.getCourseById(course.getCourseId());
