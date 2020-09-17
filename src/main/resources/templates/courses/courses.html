@@ -85,7 +85,6 @@
         <div  class="card mb-5" style="min-height: 85vh">
             <div class="card-body">
 
-                <!-- Courses in pages -->
                 <div class="container flex-xl-row mt-5">
 
                     <!-- Search courses -->
@@ -142,7 +141,7 @@
                         <!-- Course card -->
                         <a class="card d-flex m-3 course-card text-dark" style=" max-width: 16rem;"
                            th:each="course : ${coursePage}"
-                           th:href="@{'/course/' + ${course.getId()}}">
+                           th:href="@{'/courses/course' + ${course.getId()}}">
                             <img class="card-img-top course-thumbnail" alt="Course image" src="#"
                                  th:if="${course.getCourseDetails().getImage()} != null"
                                  th:src="@{'/course/image/' + ${course.getCourseDetails().getImage().getId()}}">

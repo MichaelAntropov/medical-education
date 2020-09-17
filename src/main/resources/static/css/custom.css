@@ -193,3 +193,9 @@ body {
 .course-card:hover {
     box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
 }
+
+.course-page-img {
+    background: url(../img/background.jpg) center center;
+    height: 18rem;
+    background-size: cover;
+}

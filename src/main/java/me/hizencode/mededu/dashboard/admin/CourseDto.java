@@ -39,6 +39,8 @@ public class CourseDto {
 
     private List<SpecialityEntity> chosenSpecialities;
 
+    private boolean isCertificateAvailable;
+
     public CourseDto() {
     }
 
@@ -112,6 +114,14 @@ public class CourseDto {
 
     public void setChosenSpecialities(List<SpecialityEntity> chosenSpecialities) {
         this.chosenSpecialities = chosenSpecialities;
+    }
+
+    public boolean isCertificateAvailable() {
+        return isCertificateAvailable;
+    }
+
+    public void setCertificateAvailable(boolean certificateAvailable) {
+        isCertificateAvailable = certificateAvailable;
     }
 
     @Override

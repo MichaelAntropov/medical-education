@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <title>Course</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="../../static/css/bootstrap.css">
+    <link rel="stylesheet" href="../../static/css/bootstrap-grid.css">
+
+    <link rel="stylesheet" href="../../static/css/custom.css">
+    <!--===============================================================================================-->
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-primary">
+
+    <div class="container flex-row">
+
+        <a class="navbar-brand" th:href="@{/}">
+            <img src="../../static/img/logo.png" alt="Logo" style="width:40px">
+            Hizencode
+        </a>
+
+        <button class="navbar-toggler collapsed" type="button"
+                data-toggle="collapse" data-target="#navbarsExample05"
+                aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="navbar-collapse collapse " id="navbarsExample05" style="">
+            <ul class="navbar-nav ml-auto main-menu-nav
+					 d-flex justify-content-center align-items-center">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Project<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Courses<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Contacts<span class="sr-only">(current)</span></a>
+                </li>
+
+                <div class="d-none d-md-block pr-4"></div>
+
+                <div class="d-none d-md-block pr-4 border-left border-light" style="height: 30px"></div>
+
+                <div class="d-sm-block d-md-none border-bottom border-light" style="width: 90%"></div>
+
+                <!-- Shown only to authorized users-->
+                <li sec:authorize="isAuthenticated()" class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" th:href="@{/user-dashboard}"
+                       th:text="${#authentication.getPrincipal().getEmail()}">Name
+                    </a>
+                    <div class="dropdown-menu">
+                        <form th:action="@{/logout}" method="post">
+                            <input class="dropdown-item" type="submit" value="Log out">
+                        </form>
+                    </div>
+                </li>
+
+                <!-- Shown only to visitors -->
+                <li sec:authorize="!isAuthenticated()" class="nav-item active ">
+                    <a class="nav-link" th:href="@{/login}">Sign in<span class="sr-only">(current)</span></a>
+                </li>
+
+                <li sec:authorize="!isAuthenticated()" class="nav-item active">
+                    <a class="nav-link" th:href="@{/registration}">Sign up<span
+                            class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+<div class="d-flex ">
+
+    <!-- Page Content -->
+    <div class="container-fluid mt-5 bg-light">
+        <div class="card mb-5" style="min-height: 85vh">
+            <div class="card-body">
+
+                <!-- Course -->
+                <div class="container flex-xl-row mt-5">
+
+                    <div class="row">
+                        <!-- Course 'about' -->
+                        <div class="col-3">
+                            <div class="card" style="max-width: 18rem;">
+                                <div class="card-header">
+                                    <h6>About course</h6>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <span><i class="fas fa-user-tag"></i></span>
+                                        Specialities
+                                        <ul class="list-group list-group-flush text-left"
+                                            th:if="${!course.getChosenSpecialities().isEmpty()}">
+                                            <li class="list-group-item"
+                                                th:each="speciality : ${course.getChosenSpecialities()}">
+                                                <p class="m-0 ml-3" th:text="${speciality.getName()}">Speciality</p>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <span><i class="fas fa-certificate"></i></span>
+                                        Certificate
+                                        <span class="float-right text-success"
+                                              th:if="${course.isCertificateAvailable()}">Available</span>
+                                        <span class="float-right text-danger"
+                                              th:if="${!course.isCertificateAvailable()}">Not available</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <span><i class="far fa-calendar-alt"></i></span>
+                                        Available from:
+                                        <span id="startCourse" class="float-right"
+                                              th:text="${course.getStartCourse().getMonth()} + '.' +
+                                              ${course.getStartCourse().getDate()} + '.' +
+                                              ${course.getStartCourse().getYear() + 1900}">01.01.2020</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <span><i class="far fa-calendar-alt"></i></span>
+                                        Available to:
+                                        <span id="endCourse" class="float-right"
+                                              th:text="${course.getEndCourse().getMonth()} + '.' +
+                                              ${course.getEndCourse().getDate()} + '.' +
+                                              ${course.getEndCourse().getYear()  + 1900}">01.01.2020</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <a class="btn btn-primary w-100" href="#">
+                                            Take course
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-9">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <!-- Course image -->
+                                        <div class="container course-page-img rounded"
+                                             th:if="${course.getImageId()} != null"
+                                             th:style="'background:url(/course/image/' + ${course.getImageId()} + ') center center; height: 18rem; background-size: cover;'">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-5">
+                                    <div class="col text-center">
+                                        <h4 th:text="${course.getName()}">Course name</h4>
+                                    </div>
+                                </div>
+                                <div class="row mt-5">
+                                    <div class="col">
+                                        <h6 class="float-right">Author: </h6>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <!-- Author -->
+
+                                        <p class="text-right text-muted" style="font-size: large"
+                                           th:text="${course.getAuthor()}">
+                                            Ambitioni dedisse scripsisse iudicaretur. Cras mattis
+                                            iudicium purus sit amet fermentum.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col">
+                                        <!-- Course description -->
+                                        <p class="text-justify text-muted" style="font-size: large"
+                                        th:text="${course.getDescription()}">
+                                            Ambitioni dedisse scripsisse iudicaretur. Cras mattis
+                                            iudicium purus sit amet fermentum. Donec sed odio operae,
+                                            eu vulputate felis rhoncus. Praeterea iter est quasdam res
+                                            quas ex communi. At nos hinc posthac, sitientis piros Afros.
+                                            Petierunt uti sibi concilium totius Galliae in diem certam
+                                            indicere. Cras mattis iudicium purus sit amet fermentum.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/27c4e55744.js" crossorigin="anonymous"></script>
+
+</body>
+</html>
