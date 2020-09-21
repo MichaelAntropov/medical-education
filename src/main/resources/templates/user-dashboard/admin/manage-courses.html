@@ -123,7 +123,7 @@
                 <div class="container-fluid">
                     <!-- Search courses -->
                     <form th:action="@{/user-dashboard/manage-courses/search}" th:object="${searchCourses}"
-                          method="post">
+                          method="get">
                         <div class="row">
                             <div class="col-12">
                                 <div class="input-group mb-3">
@@ -160,12 +160,12 @@
                                         <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
                                             <div class="col text-truncate" th:each="specialitiy : ${specialities}">
                                                 <div class="custom-control custom-checkbox">
-                                                    <input id="checkbox" th:id="${specialitiy.getId()}" type="checkbox"
+                                                    <input id="checkbox" th:id="'speciality' + ${specialitiy.getId()}" type="checkbox"
                                                            class="custom-control-input"
                                                            th:field="*{chosenSpecialities}"
                                                            th:value="${specialitiy.getId()}">
                                                     <label for="checkbox" class="custom-control-label"
-                                                           th:for="${specialitiy.getId()}"
+                                                           th:for="'speciality' + ${specialitiy.getId()}"
                                                            th:text="${specialitiy.getName()}"></label>
                                                 </div>
                                             </div>
@@ -179,7 +179,7 @@
                     <!-- Courses in pages -->
                     <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
                         <div class="card d-flex m-3" style="max-width: 18rem;"
-                             th:each="course : ${coursePage}">
+                             th:each="course : ${courses}">
                             <img class="card-img-top course-thumbnail" alt="Course image" src="#"
                                  th:if="${course.getCourseDetails().getImage()} != null"
                                  th:src="@{'/course/image/' + ${course.getCourseDetails().getImage().getId()}}">
@@ -189,20 +189,34 @@
                                     Some quick example text of course and make up the bulk of the card's content.
                                     Very huge chunk of text to test custom overflow.
                                 </p>
-                                <form th:action="@{/user-dashboard/manage-courses/edit}" method="post">
-                                    <input type="hidden" aria-label="course id" name="courseId"
-                                           th:value="${course.getId()}">
-                                    <button class="btn btn-primary" type="submit">
-                                        Edit
-                                    </button>
-                                </form>
+
+                                <a class="btn btn-primary"
+                                   th:href="@{/user-dashboard/manage-courses/edit/course{courseId}(courseId = ${course.getId()})}">
+                                    Edit
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
+
+                <ul class="pagination justify-content-center align-self-end">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"

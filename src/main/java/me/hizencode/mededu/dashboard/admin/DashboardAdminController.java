@@ -12,20 +12,19 @@ import me.hizencode.mededu.specialities.SpecialityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -66,23 +65,48 @@ public class DashboardAdminController {
         Page<CourseEntity> page = courseService.findAll(
                 PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "editDate")));
 
-        model.addAttribute("coursePage", page);
+        model.addAttribute("courses", page.getContent());
 
         return "user-dashboard/admin/manage-courses";
     }
 
-    @PostMapping("/user-dashboard/manage-courses/search")
+    @GetMapping("/user-dashboard/manage-courses/search")
     private String searchCourses(@ModelAttribute(name = "searchCourses") @Valid AdminSearchCoursesDto searchCoursesDto,
                                  BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "redirect:/user-dashboard/manage-courses";
         }
 
+        String searchText = searchCoursesDto.getSearchText().strip();
+        List<SpecialityEntity> chosenSpecialities = searchCoursesDto.getChosenSpecialities();
+
         //Do the search
-        System.out.println("//================================================");
-        searchCoursesDto.getChosenSpecialities().forEach(System.out::println);
-        System.out.println(searchCoursesDto.getSearchText());
-        System.out.println("//================================================");
+        if (searchText.isEmpty() && chosenSpecialities.isEmpty()) {
+            return "redirect:/user-dashboard/manage-courses";
+        }
+
+        Page<CourseEntity> page = Page.empty();
+
+        if (!searchText.isEmpty() && chosenSpecialities.isEmpty()) {
+            Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "editDate"));
+            page = courseService.findAllByNameIsLike(searchText, pageable);
+        }
+
+        if (searchText.isEmpty() && !chosenSpecialities.isEmpty()) {
+            ArrayList<Integer> specialities = new ArrayList<>();
+            chosenSpecialities.forEach(specialityEntity -> specialities.add(specialityEntity.getId()));
+
+            Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "editDate"));
+            page = courseService.findAllBySpecialities(specialities, pageable);
+        }
+
+        if (!searchText.isEmpty() && !chosenSpecialities.isEmpty()) {
+            ArrayList<Integer> specialities = new ArrayList<>();
+            chosenSpecialities.forEach(specialityEntity -> specialities.add(specialityEntity.getId()));
+
+            Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "editDate"));
+            page = courseService.findAllByNameAndSpecialities(searchText, specialities, pageable);
+        }
 
         //Get specialities from db and add to the model
         ArrayList<SpecialityEntity> specialities = specialityService.getAllSpecialities();
@@ -95,7 +119,7 @@ public class DashboardAdminController {
 
         model.addAttribute("searchCourses", searchCourses);
 
-        //TODO:Add searched courses
+        model.addAttribute("courses", page.getContent());
 
         return "user-dashboard/admin/manage-courses";
     }
@@ -153,8 +177,8 @@ public class DashboardAdminController {
         return "redirect:/user-dashboard/manage-courses";
     }
 
-    @PostMapping("/user-dashboard/manage-courses/edit")
-    private String editCourse(@RequestParam("courseId") Integer courseId, Model model) {
+    @GetMapping("/user-dashboard/manage-courses/edit/course{courseId}")
+    private String editCourse(@PathVariable("courseId") Integer courseId, Model model) {
 
         Optional<CourseEntity> courseOptional = courseService.getCourseById(courseId);
 

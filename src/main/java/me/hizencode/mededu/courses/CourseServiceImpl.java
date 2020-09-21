@@ -3,9 +3,11 @@ package me.hizencode.mededu.courses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -58,6 +60,24 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Page<CourseEntity> findAll(PageRequest pageRequest) {
         return courseRepository.findAll(pageRequest);
+    }
+
+    @Transactional
+    @Override
+    public Page<CourseEntity> findAllByNameIsLike(String name, Pageable pageable) {
+        return courseRepository.findAllByNameContains(name, pageable);
+    }
+
+    @Transactional
+    @Override
+    public Page<CourseEntity> findAllBySpecialities(List<Integer> specialitiesId, Pageable pageable) {
+        return courseRepository.findAllBySpecialities(specialitiesId, (long) specialitiesId.size(), pageable);
+    }
+
+    @Transactional
+    @Override
+    public Page<CourseEntity> findAllByNameAndSpecialities(String name, List<Integer> specialitiesId, Pageable pageable) {
+        return courseRepository.findAllByNameAndSpecialities(name, specialitiesId, (long) specialitiesId.size(), pageable);
     }
 
     @Override

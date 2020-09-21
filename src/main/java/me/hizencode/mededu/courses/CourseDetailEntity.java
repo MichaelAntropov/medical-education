@@ -97,7 +97,6 @@ public class CourseDetailEntity {
     public String toString() {
         return "CourseDetailEntity{" +
                 "id=" + id +
-                ", image=" + image +
                 ", videoUrl='" + videoUrl + '\'' +
                 ", startCourse=" + startCourse +
                 ", endCourse=" + endCourse +
