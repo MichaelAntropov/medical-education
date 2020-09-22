@@ -122,64 +122,63 @@
 
                 <div class="container-fluid">
                     <!-- Search courses -->
-                    <form th:action="@{/user-dashboard/manage-courses/search}" th:object="${searchCourses}"
-                          method="get">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="input-group mb-3">
-                                    <!-- Search field -->
-                                    <input type="text" class="form-control" placeholder="Search course"
-                                           aria-label="Search course"
-                                           th:field="*{searchText}" th:value="*{searchText}">
-                                    <div class="input-group-append">
-                                        <!-- Search button -->
-                                        <button class="btn btn-outline-primary" type="submit">Search</button>
-                                        <!-- Filter button -->
-                                        <button type="button" class="btn btn-outline-primary dropdown-toggle"
-                                                data-toggle="collapse" aria-pressed="false" data-target="#filter">
-                                            Filter
-                                        </button>
-                                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="input-group mb-3">
+                                <!-- Search field -->
+                                <input id="textSearch" type="text" class="form-control" placeholder="Search course"
+                                       aria-label="Search course"
+                                       th:value="${searchData.getSearchText() != null ? searchData.getSearchText() : ''}">
+                                <div class="input-group-append">
+                                    <!-- Search button -->
+                                    <a id="searchButton" class="btn btn-outline-primary">Search</a>
+                                    <!-- Filter button -->
+                                    <button type="button" class="btn btn-outline-primary dropdown-toggle"
+                                            data-toggle="collapse" aria-pressed="false" data-target="#filter">
+                                        Filter
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                        <!-- Add course -->
-                        <div class="row">
-                            <div class="col">
-                                <a type="button" class="btn btn-primary"
-                                   th:href="@{/user-dashboard/manage-courses/create}">Add course +</a>
-                            </div>
+                    </div>
+                    <!-- Add course -->
+                    <div class="row">
+                        <div class="col">
+                            <a type="button" class="btn btn-primary"
+                               th:href="@{/user-dashboard/manage-courses/create}">Add course +</a>
                         </div>
-                        <!-- Filter menu -->
-                        <div class="row">
-                            <div class="col">
-                                <div class="collapse" id="filter">
-                                    <div class="card m-3 p-3">
-                                        <h5 class="text">Filter menu</h5>
-                                        <h6 class="text">Specialities</h6>
-                                        <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
-                                            <div class="col text-truncate" th:each="specialitiy : ${specialities}">
-                                                <div class="custom-control custom-checkbox">
-                                                    <input id="checkbox" th:id="'speciality' + ${specialitiy.getId()}" type="checkbox"
-                                                           class="custom-control-input"
-                                                           th:field="*{chosenSpecialities}"
-                                                           th:value="${specialitiy.getId()}">
-                                                    <label for="checkbox" class="custom-control-label"
-                                                           th:for="'speciality' + ${specialitiy.getId()}"
-                                                           th:text="${specialitiy.getName()}"></label>
-                                                </div>
+                    </div>
+                    <!-- Filter menu -->
+                    <div class="row">
+                        <div class="col">
+                            <div class="collapse" id="filter">
+                                <div class="card m-3 p-3">
+                                    <h5 class="text">Filter menu</h5>
+                                    <h6 class="text">Specialities</h6>
+                                    <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+                                        <div class="col text-truncate" th:each="specialitiy : ${specialities}">
+                                            <div class="custom-control custom-checkbox">
+                                                <input id="checkbox" type="checkbox" class="custom-control-input"
+                                                       th:id="'specialityId' + ${specialitiy.getId()}"
+                                                       th:value="${specialitiy.getId()}"
+                                                       th:checked="${searchData.getChosenSpecialities() != null ? searchData.getChosenSpecialities().contains(specialitiy.getId()) : false}">
+                                                <label for="checkbox" class="custom-control-label"
+                                                       th:for="'specialityId' + ${specialitiy.getId()}"
+                                                       th:text="${specialitiy.getName()}">
+                                                    Speciality name
+                                                </label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <hr>
                             </div>
+                            <hr>
                         </div>
-                    </form>
+                    </div>
                     <!-- Courses in pages -->
                     <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
                         <div class="card d-flex m-3" style="max-width: 18rem;"
-                             th:each="course : ${courses}">
+                             th:each="course : ${coursesPage.getContent()}">
                             <img class="card-img-top course-thumbnail" alt="Course image" src="#"
                                  th:if="${course.getCourseDetails().getImage()} != null"
                                  th:src="@{'/course/image/' + ${course.getCourseDetails().getImage().getId()}}">
@@ -207,6 +206,7 @@
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
+
                     <li class="page-item"><a class="page-link" href="#">1</a></li>
                     <li class="page-item"><a class="page-link" href="#">2</a></li>
                     <li class="page-item"><a class="page-link" href="#">3</a></li>
@@ -246,6 +246,37 @@
 
         document.getElementById("sidenav-overlay").style.display = "none";
     }
+
+    document.getElementById("searchButton").onclick = function () {
+        let searchText = document.getElementById("textSearch").value;
+        let specialityElements = document.querySelectorAll('input[id^="specialityId"]');
+        let specialityIds = "";
+
+        specialityElements.forEach(value => {
+            if(value.checked === true) {
+                specialityIds = specialityIds + value.value + ",";
+            }
+        })
+        specialityIds = specialityIds.substring(0, specialityIds.length - 1);
+
+        if(searchText === '' && specialityIds === '') {
+            location.href = "/user-dashboard/manage-courses";
+            return;
+        }
+        if(searchText === '' && specialityIds !== '') {
+            location.href = "/user-dashboard/manage-courses?" +
+                "specialities=" + specialityIds;
+            return;
+        }
+        if(searchText !== '' && specialityIds === '') {
+            location.href = "/user-dashboard/manage-courses?" +
+                "text=" + searchText;
+            return;
+        }
+        location.href = "/user-dashboard/manage-courses?" +
+            "text=" + searchText +
+            "&specialities=" + specialityIds;
+    };
 </script>
 </body>
 </html>

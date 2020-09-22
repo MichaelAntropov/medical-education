@@ -5,18 +5,16 @@ import me.hizencode.mededu.courses.CourseDetailEntity;
 import me.hizencode.mededu.courses.CourseEntity;
 import me.hizencode.mededu.courses.CourseService;
 import me.hizencode.mededu.dashboard.admin.dto.AdminCourseDto;
-import me.hizencode.mededu.dashboard.admin.dto.AdminSearchCoursesDto;
+import me.hizencode.mededu.dashboard.admin.dto.AdminSearchDataDto;
 import me.hizencode.mededu.image.ImageEntity;
 import me.hizencode.mededu.specialities.SpecialityEntity;
 import me.hizencode.mededu.specialities.SpecialityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,74 +50,98 @@ public class DashboardAdminController {
     /*================================================================================================================*/
 
     @GetMapping("/user-dashboard/manage-courses")
-    private String manageCourses(Model model) {
-        //Get specialities from db and add to the model
-        ArrayList<SpecialityEntity> specialities = specialityService.getAllSpecialities();
-        model.addAttribute("specialities", specialities);
+    private String manageCourses(@RequestParam(value = "text", required = false, defaultValue = "") String text,
+                                 @RequestParam(value = "specialities", required = false, defaultValue = "") List<String> specialitiesIds,
+                                 @RequestParam(value = "page", required = false, defaultValue = "1") String pageNumberStr,
+                                 Model model) {
+        int pageNumber;
 
-        //Specialities for filter option
-        AdminSearchCoursesDto searchCourses = new AdminSearchCoursesDto();
-        model.addAttribute("searchCourses", searchCourses);
-
-        //Fetch 10 courses by name
-        Page<CourseEntity> page = courseService.findAll(
-                PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "editDate")));
-
-        model.addAttribute("courses", page.getContent());
-
-        return "user-dashboard/admin/manage-courses";
-    }
-
-    @GetMapping("/user-dashboard/manage-courses/search")
-    private String searchCourses(@ModelAttribute(name = "searchCourses") @Valid AdminSearchCoursesDto searchCoursesDto,
-                                 BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
+        try {
+            pageNumber = Integer.parseInt(pageNumberStr);
+            if(pageNumber < 1) {
+                return "redirect:/user-dashboard/manage-courses";
+            }
+        } catch (NumberFormatException e) {
             return "redirect:/user-dashboard/manage-courses";
         }
 
-        String searchText = searchCoursesDto.getSearchText().strip();
-        List<SpecialityEntity> chosenSpecialities = searchCoursesDto.getChosenSpecialities();
-
-        //Do the search
-        if (searchText.isEmpty() && chosenSpecialities.isEmpty()) {
+        if(text.length() > 128 || specialitiesIds.size() > 128) {
             return "redirect:/user-dashboard/manage-courses";
-        }
-
-        Page<CourseEntity> page = Page.empty();
-
-        if (!searchText.isEmpty() && chosenSpecialities.isEmpty()) {
-            Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "editDate"));
-            page = courseService.findAllByNameIsLike(searchText, pageable);
-        }
-
-        if (searchText.isEmpty() && !chosenSpecialities.isEmpty()) {
-            ArrayList<Integer> specialities = new ArrayList<>();
-            chosenSpecialities.forEach(specialityEntity -> specialities.add(specialityEntity.getId()));
-
-            Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "editDate"));
-            page = courseService.findAllBySpecialities(specialities, pageable);
-        }
-
-        if (!searchText.isEmpty() && !chosenSpecialities.isEmpty()) {
-            ArrayList<Integer> specialities = new ArrayList<>();
-            chosenSpecialities.forEach(specialityEntity -> specialities.add(specialityEntity.getId()));
-
-            Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "editDate"));
-            page = courseService.findAllByNameAndSpecialities(searchText, specialities, pageable);
         }
 
         //Get specialities from db and add to the model
         ArrayList<SpecialityEntity> specialities = specialityService.getAllSpecialities();
         model.addAttribute("specialities", specialities);
 
-        //Set values in search and filter for filter option
-        AdminSearchCoursesDto searchCourses = new AdminSearchCoursesDto();
-        searchCourses.setChosenSpecialities(searchCoursesDto.getChosenSpecialities());
-        searchCourses.setSearchText(searchCoursesDto.getSearchText());
+        //Specialities for filter option
+        AdminSearchDataDto searchData = new AdminSearchDataDto();
+        model.addAttribute("searchData", searchData);
 
-        model.addAttribute("searchCourses", searchCourses);
+        //Do the standard query or search
+        if(text.isEmpty() && specialitiesIds.isEmpty()) {
+            //Fetch 10 courses by editDate
+            Page<CourseEntity> page = courseService.findAll(
+                    PageRequest.of(pageNumber - 1, 10, Sort.by(Sort.Direction.DESC, "editDate")));
 
-        model.addAttribute("courses", page.getContent());
+            model.addAttribute("coursesPage", page);
+
+            return "user-dashboard/admin/manage-courses";
+        }
+
+        if(!text.isEmpty() && specialitiesIds.isEmpty()) {
+            Page<CourseEntity> page = courseService.findAllByNameIsLike(text,
+                    PageRequest.of(pageNumber - 1, 10, Sort.by(Sort.Direction.DESC, "editDate")));
+
+            AdminSearchDataDto searchDataDto = new AdminSearchDataDto();
+            searchDataDto.setSearchText(text);
+
+            model.addAttribute("searchData", searchDataDto);
+            model.addAttribute("coursesPage", page);
+
+            return "user-dashboard/admin/manage-courses";
+        }
+
+        if(text.isEmpty()) {
+            List<Integer> specialitiesIdsInt = new ArrayList<>();
+            for (String stringId : specialitiesIds) {
+                try {
+                    specialitiesIdsInt.add(Integer.parseInt(stringId));
+                } catch (NumberFormatException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+
+            Page<CourseEntity> page = courseService.findAllBySpecialities(specialitiesIdsInt,
+                    PageRequest.of(pageNumber - 1, 10, Sort.by(Sort.Direction.DESC, "editDate")));
+
+            AdminSearchDataDto searchDataDto = new AdminSearchDataDto();
+            searchDataDto.setChosenSpecialities(specialitiesIdsInt);
+
+            model.addAttribute("searchData", searchDataDto);
+            model.addAttribute("coursesPage", page);
+
+            return "user-dashboard/admin/manage-courses";
+        }
+
+        //If both, text and specialities are present
+        List<Integer> specialitiesIdsInt = new ArrayList<>();
+        for (String stringId : specialitiesIds) {
+            try {
+                specialitiesIdsInt.add(Integer.parseInt(stringId));
+            } catch (NumberFormatException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        Page<CourseEntity> page = courseService.findAllByNameAndSpecialities(text, specialitiesIdsInt,
+                PageRequest.of(pageNumber - 1, 10, Sort.by(Sort.Direction.DESC, "editDate")));
+
+        AdminSearchDataDto searchDataDto = new AdminSearchDataDto();
+        searchDataDto.setChosenSpecialities(specialitiesIdsInt);
+        searchDataDto.setSearchText(text);
+
+        model.addAttribute("searchData", searchDataDto);
+        model.addAttribute("coursesPage", page);
 
         return "user-dashboard/admin/manage-courses";
     }
