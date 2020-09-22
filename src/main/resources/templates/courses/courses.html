@@ -88,59 +88,57 @@
                 <div class="container flex-xl-row mt-5">
 
                     <!-- Search courses -->
-                    <form th:action="@{/courses/search}" th:object="${searchCourses}"
-                          method="post">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="input-group mb-3">
-                                    <!-- Search field -->
-                                    <input type="text" class="form-control" placeholder="Search course"
-                                           aria-label="Search course"
-                                           th:field="*{searchText}" th:value="*{searchText}">
-                                    <div class="input-group-append">
-                                        <!-- Search button -->
-                                        <button class="btn btn-outline-primary" type="submit">Search</button>
-                                        <!-- Filter button -->
-                                        <button type="button" class="btn btn-outline-primary dropdown-toggle"
-                                                data-toggle="collapse" aria-pressed="false" data-target="#filter">
-                                            Filter
-                                        </button>
-                                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="input-group mb-3">
+                                <!-- Search field -->
+                                <input id="textSearch" type="text" class="form-control" placeholder="Search course"
+                                       aria-label="Search course"
+                                       th:value="${searchData.getSearchText() != null ? searchData.getSearchText() : ''}">
+                                <div class="input-group-append">
+                                    <!-- Search button -->
+                                    <a id="searchButton" class="btn btn-outline-primary">Search</a>
+                                    <!-- Filter button -->
+                                    <button type="button" class="btn btn-outline-primary dropdown-toggle"
+                                            data-toggle="collapse" aria-pressed="false" data-target="#filter">
+                                        Filter
+                                    </button>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Filter menu -->
-                        <div class="row">
-                            <div class="col">
-                                <div class="collapse" id="filter">
-                                    <div class="card m-3 p-3">
-                                        <h5 class="text">Filter menu</h5>
-                                        <h6 class="text">Specialities</h6>
-                                        <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
-                                            <div class="col text-truncate" th:each="specialitiy : ${specialities}">
-                                                <div class="custom-control custom-checkbox">
-                                                    <input id="checkbox" th:id="${specialitiy.getId()}" type="checkbox"
-                                                           class="custom-control-input"
-                                                           th:field="*{chosenSpecialities}"
-                                                           th:value="${specialitiy.getId()}">
-                                                    <label for="checkbox" class="custom-control-label"
-                                                           th:for="${specialitiy.getId()}"
-                                                           th:text="${specialitiy.getName()}"></label>
-                                                </div>
+                    <!-- Filter menu -->
+                    <div class="row">
+                        <div class="col">
+                            <div class="collapse" id="filter">
+                                <div class="card m-3 p-3">
+                                    <h5 class="text">Filter menu</h5>
+                                    <h6 class="text">Specialities</h6>
+                                    <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+                                        <div class="col text-truncate" th:each="specialitiy : ${specialities}">
+                                            <div class="custom-control custom-checkbox">
+                                                <input id="checkbox" type="checkbox" class="custom-control-input"
+                                                       th:id="'specialityId' + ${specialitiy.getId()}"
+                                                       th:value="${specialitiy.getId()}"
+                                                       th:checked="${searchData.getChosenSpecialities() != null ? searchData.getChosenSpecialities().contains(specialitiy.getId()) : false}">
+                                                <label for="checkbox" class="custom-control-label"
+                                                       th:for="'specialityId' + ${specialitiy.getId()}"
+                                                       th:text="${specialitiy.getName()}">
+                                                    Speciality name
+                                                </label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
-
+                    </div>
+                    <!-- Courses in pages -->
                     <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-3 row-cols-xl-4 mr-0">
-
                         <!-- Course card -->
                         <a class="card d-flex m-3 course-card text-dark"
-                           th:each="course : ${coursePage}"
+                           th:each="course : ${coursesPage.getContent()}"
                            th:href="@{'/courses/course' + ${course.getId()}}">
                             <img class="card-img-top course-thumbnail" alt="Course image" src="#"
                                  th:if="${course.getCourseDetails().getImage()} != null"
@@ -157,6 +155,36 @@
                 </div>
             </div>
         </div>
+
+        <!-- Pagination -->
+        <!--   How to get current url and add params https://stackoverflow.com/a/42531042/13556506-->
+        <ul class="pagination justify-content-center align-self-end">
+            <li class="page-item"
+                th:classappend="${coursesPage.getNumber() <= 0} ? 'disabled' : ''">
+                <a class="page-link" aria-label="Previous"
+                   th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
+                   th:href="${urlBuilder.replaceQueryParam('page', coursesPage.getNumber()).toUriString()}">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item"
+                th:if="${coursesPage.getTotalPages() != 0}"
+                th:each="number : ${#numbers.sequence(1, coursesPage.getTotalPages())}"
+                th:classappend="${coursesPage.getNumber() == (number - 1)} ? 'active' : ''">
+                <a class="page-link"
+                   th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
+                   th:href="${urlBuilder.replaceQueryParam('page', number).toUriString()}"
+                   th:text="${number}">Number</a>
+            </li>
+            <li class="page-item"
+                th:classappend="${coursesPage.getNumber() + 1 >= coursesPage.getTotalPages()} ? 'disabled' : ''">
+                <a class="page-link" aria-label="Next"
+                   th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
+                   th:href="${urlBuilder.replaceQueryParam('page', coursesPage.getNumber() + 2).toUriString()}">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
@@ -168,6 +196,39 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
         integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
         crossorigin="anonymous"></script>
+<!-- Search Request -->
+<script type="text/javascript">
 
+    document.getElementById("searchButton").onclick = function () {
+        let searchText = document.getElementById("textSearch").value;
+        let specialityElements = document.querySelectorAll('input[id^="specialityId"]');
+        let specialityIds = "";
+
+        specialityElements.forEach(value => {
+            if (value.checked === true) {
+                specialityIds = specialityIds + value.value + ",";
+            }
+        })
+        specialityIds = specialityIds.substring(0, specialityIds.length - 1);
+
+        if (searchText === '' && specialityIds === '') {
+            location.href = "/courses";
+            return;
+        }
+        if (searchText === '' && specialityIds !== '') {
+            location.href = "/courses?" +
+                "specialities=" + specialityIds;
+            return;
+        }
+        if (searchText !== '' && specialityIds === '') {
+            location.href = "/courses?" +
+                "text=" + searchText;
+            return;
+        }
+        location.href = "/courses?" +
+            "text=" + searchText +
+            "&specialities=" + specialityIds;
+    };
+</script>
 </body>
 </html>

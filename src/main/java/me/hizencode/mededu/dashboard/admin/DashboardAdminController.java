@@ -50,7 +50,7 @@ public class DashboardAdminController {
     /*================================================================================================================*/
 
     @GetMapping("/user-dashboard/manage-courses")
-    private String manageCourses(@RequestParam(value = "text", required = false, defaultValue = "") String text,
+    private String showManageCourses(@RequestParam(value = "text", required = false, defaultValue = "") String text,
                                  @RequestParam(value = "specialities", required = false, defaultValue = "") List<String> specialitiesIds,
                                  @RequestParam(value = "page", required = false, defaultValue = "1") String pageNumberStr,
                                  Model model) {

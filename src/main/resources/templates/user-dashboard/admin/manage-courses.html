@@ -177,6 +177,7 @@
                     </div>
                     <!-- Courses in pages -->
                     <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+                        <!-- Course card -->
                         <div class="card d-flex m-3" style="max-width: 18rem;"
                              th:each="course : ${coursesPage.getContent()}">
                             <img class="card-img-top course-thumbnail" alt="Course image" src="#"
@@ -242,7 +243,7 @@
         integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
         crossorigin="anonymous"></script>
 
-<!-- Menu Toggle Script -->
+<!-- Menu Toggle Script And Search Request -->
 <script type="text/javascript">
 
     function openNav() {

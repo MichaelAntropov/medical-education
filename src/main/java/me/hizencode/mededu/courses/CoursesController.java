@@ -1,7 +1,7 @@
 package me.hizencode.mededu.courses;
 
 import me.hizencode.mededu.courses.dto.CourseDto;
-import me.hizencode.mededu.courses.dto.SearchCoursesDto;
+import me.hizencode.mededu.courses.dto.SearchDataDto;
 import me.hizencode.mededu.specialities.SpecialityEntity;
 import me.hizencode.mededu.specialities.SpecialityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -41,20 +43,98 @@ public class CoursesController {
     /*================================================================================================================*/
 
     @GetMapping("/courses")
-    public String showCourses(Model model) {
+    public String showCourses(@RequestParam(value = "text", required = false, defaultValue = "") String text,
+                              @RequestParam(value = "specialities", required = false, defaultValue = "") List<String> specialitiesIds,
+                              @RequestParam(value = "page", required = false, defaultValue = "1") String pageNumberStr,
+                              Model model) {
+        int pageNumber;
+
+        try {
+            pageNumber = Integer.parseInt(pageNumberStr);
+            if(pageNumber < 1) {
+                return "redirect:/user-dashboard/manage-courses";
+            }
+        } catch (NumberFormatException e) {
+            return "redirect:/user-dashboard/manage-courses";
+        }
+
+        if(text.length() > 128 || specialitiesIds.size() > 128) {
+            return "redirect:/user-dashboard/manage-courses";
+        }
+
         //Get specialities from db and add to the model
         ArrayList<SpecialityEntity> specialities = specialityService.getAllSpecialities();
         model.addAttribute("specialities", specialities);
 
         //Specialities for filter option
-        SearchCoursesDto searchCourses = new SearchCoursesDto();
-        model.addAttribute("searchCourses", searchCourses);
+        SearchDataDto searchData = new SearchDataDto();
+        model.addAttribute("searchData", searchData);
 
-        //Fetch 10 courses by name
-        Page<CourseEntity> page = courseService.findAll(
-                PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "creationDate")));
+        //Do the standard query or search
+        if(text.isEmpty() && specialitiesIds.isEmpty()) {
+            //Fetch 10 courses by editDate
+            Page<CourseEntity> page = courseService.findAll(
+                    PageRequest.of(pageNumber - 1, 10, Sort.by(Sort.Direction.DESC, "creationDate")));
 
-        model.addAttribute("coursePage", page);
+            model.addAttribute("coursesPage", page);
+
+            return "courses/courses";
+        }
+
+        if(!text.isEmpty() && specialitiesIds.isEmpty()) {
+            Page<CourseEntity> page = courseService.findAllByNameIsLike(text,
+                    PageRequest.of(pageNumber - 1, 10, Sort.by(Sort.Direction.DESC, "creationDate")));
+
+            SearchDataDto searchDataDto = new SearchDataDto();
+            searchDataDto.setSearchText(text);
+
+            model.addAttribute("searchData", searchDataDto);
+            model.addAttribute("coursesPage", page);
+
+            return "courses/courses";
+        }
+
+        if(text.isEmpty()) {
+            List<Integer> specialitiesIdsInt = new ArrayList<>();
+            for (String stringId : specialitiesIds) {
+                try {
+                    specialitiesIdsInt.add(Integer.parseInt(stringId));
+                } catch (NumberFormatException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+
+            Page<CourseEntity> page = courseService.findAllBySpecialities(specialitiesIdsInt,
+                    PageRequest.of(pageNumber - 1, 10, Sort.by(Sort.Direction.DESC, "creationDate")));
+
+            SearchDataDto searchDataDto = new SearchDataDto();
+            searchDataDto.setChosenSpecialities(specialitiesIdsInt);
+
+            model.addAttribute("searchData", searchDataDto);
+            model.addAttribute("coursesPage", page);
+
+            return "courses/courses";
+        }
+
+        //If both, text and specialities are present
+        List<Integer> specialitiesIdsInt = new ArrayList<>();
+        for (String stringId : specialitiesIds) {
+            try {
+                specialitiesIdsInt.add(Integer.parseInt(stringId));
+            } catch (NumberFormatException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        Page<CourseEntity> page = courseService.findAllByNameAndSpecialities(text, specialitiesIdsInt,
+                PageRequest.of(pageNumber - 1, 10, Sort.by(Sort.Direction.DESC, "creationDate")));
+
+        SearchDataDto searchDataDto = new SearchDataDto();
+        searchDataDto.setChosenSpecialities(specialitiesIdsInt);
+        searchDataDto.setSearchText(text);
+
+        model.addAttribute("searchData", searchDataDto);
+        model.addAttribute("coursesPage", page);
 
         return "courses/courses";
     }
