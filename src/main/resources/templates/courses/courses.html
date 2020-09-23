@@ -78,18 +78,18 @@
     </div>
 </nav>
 
-<div class="d-flex ">
+<div class="d-flex">
 
     <!-- Page Content -->
     <div class="container-fluid mt-5 bg-light">
         <div class="card mb-5" style="min-height: 85vh">
             <div class="card-body">
 
-                <div class="container flex-xl-row mt-5">
+                <div class="container-xl mt-5 justify-content-center">
 
                     <!-- Search courses -->
                     <div class="row">
-                        <div class="col-12">
+                        <div class="col col-lg-10 offset-lg-1">
                             <div class="input-group mb-3">
                                 <!-- Search field -->
                                 <input id="textSearch" type="text" class="form-control" placeholder="Search course"
@@ -110,7 +110,7 @@
 
                     <!-- Filter menu -->
                     <div class="row">
-                        <div class="col">
+                        <div class="col-10 offset-1">
                             <div class="collapse" id="filter">
                                 <div class="card m-3 p-3">
                                     <h5 class="text">Filter menu</h5>
@@ -135,7 +135,7 @@
                         </div>
                     </div>
                     <!-- Courses in pages -->
-                    <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-3 row-cols-xl-4 mr-0">
+                    <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-3 row-cols-xl-4 mr-0 justify-content-center">
                         <!-- Course card -->
                         <a class="card d-flex m-3 course-card text-dark"
                            th:each="course : ${coursesPage.getContent()}"
