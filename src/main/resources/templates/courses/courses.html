@@ -89,7 +89,7 @@
 
                     <!-- Search courses -->
                     <div class="row">
-                        <div class="col col-lg-10 offset-lg-1">
+                        <div class="col-12">
                             <div class="input-group mb-3">
                                 <!-- Search field -->
                                 <input id="textSearch" type="text" class="form-control" placeholder="Search course"
@@ -110,7 +110,7 @@
 
                     <!-- Filter menu -->
                     <div class="row">
-                        <div class="col-10 offset-1">
+                        <div class="col-12">
                             <div class="collapse" id="filter">
                                 <div class="card m-3 p-3">
                                     <h5 class="text">Filter menu</h5>
@@ -135,20 +135,22 @@
                         </div>
                     </div>
                     <!-- Courses in pages -->
-                    <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-3 row-cols-xl-4 mr-0 justify-content-center">
+                    <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-3 row-cols-xl-3 justify-content-center">
                         <!-- Course card -->
-                        <a class="card d-flex m-3 course-card text-dark"
+                        <a class="card border-0"
                            th:each="course : ${coursesPage.getContent()}"
                            th:href="@{'/courses/course' + ${course.getId()}}">
-                            <img class="card-img-top course-thumbnail" alt="Course image" src="#"
-                                 th:if="${course.getCourseDetails().getImage()} != null"
-                                 th:src="@{'/course/image/' + ${course.getCourseDetails().getImage().getId()}}">
-                            <div class="card-body">
-                                <h5 class="card-title text-truncate" th:text="${course.getName()}">Course title</h5>
-                                <p class="card-text overflow" th:text="${course.getCourseDescription().getText()}">
-                                    Some quick example text of course and make up the bulk of the card's content.
-                                    Very huge chunk of text to test custom overflow.
-                                </p>
+                            <div class="card m-3 text-dark course-card">
+                                <img class="card-img-top course-thumbnail" alt="Course image" src="#"
+                                     th:if="${course.getCourseDetails().getImage()} != null"
+                                     th:src="@{'/course/image/' + ${course.getCourseDetails().getImage().getId()}}">
+                                <div class="card-body">
+                                    <h5 class="card-title text-truncate" th:text="${course.getName()}">Course title</h5>
+                                    <p class="card-text overflow" th:text="${course.getCourseDescription().getText()}">
+                                        Some quick example text of course and make up the bulk of the card's content.
+                                        Very huge chunk of text to test custom overflow.
+                                    </p>
+                                </div>
                             </div>
                         </a>
                     </div>
