@@ -85,7 +85,7 @@ public class DashboardAdminController {
 
             model.addAttribute("coursesPage", page);
 
-            return "user-dashboard/admin/manage-courses";
+            return "user-dashboard/admin/courses/manage-courses";
         }
 
         if(!text.isEmpty() && specialitiesIds.isEmpty()) {
@@ -98,7 +98,7 @@ public class DashboardAdminController {
             model.addAttribute("searchData", searchDataDto);
             model.addAttribute("coursesPage", page);
 
-            return "user-dashboard/admin/manage-courses";
+            return "user-dashboard/admin/courses/manage-courses";
         }
 
         if(text.isEmpty()) {
@@ -120,7 +120,7 @@ public class DashboardAdminController {
             model.addAttribute("searchData", searchDataDto);
             model.addAttribute("coursesPage", page);
 
-            return "user-dashboard/admin/manage-courses";
+            return "user-dashboard/admin/courses/manage-courses";
         }
 
         //If both, text and specialities are present
@@ -143,7 +143,7 @@ public class DashboardAdminController {
         model.addAttribute("searchData", searchDataDto);
         model.addAttribute("coursesPage", page);
 
-        return "user-dashboard/admin/manage-courses";
+        return "user-dashboard/admin/courses/manage-courses";
     }
 
     @GetMapping("/user-dashboard/manage-courses/create")
@@ -155,7 +155,7 @@ public class DashboardAdminController {
         AdminCourseDto course = new AdminCourseDto();
         model.addAttribute("course", course);
 
-        return "user-dashboard/admin/create-course";
+        return "user-dashboard/admin/courses/create-course";
     }
 
     @PostMapping("/user-dashboard/manage-courses/create/save")
@@ -234,7 +234,7 @@ public class DashboardAdminController {
         //Add course to model. Note: Image is shown to user through ImageController
         model.addAttribute("course", course);
 
-        return "user-dashboard/admin/edit-course";
+        return "user-dashboard/admin/courses/edit-course";
     }
 
     @PostMapping("/user-dashboard/manage-courses/edit/save")
