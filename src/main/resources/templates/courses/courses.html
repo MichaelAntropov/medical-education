@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       lang="en">
 <head>
-    <title>User | Dashboard</title>
+    <title>Courses</title>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -146,10 +146,14 @@
                                      th:src="@{'/course/image/' + ${course.getCourseDetails().getImage().getId()}}">
                                 <div class="card-body">
                                     <h5 class="card-title text-truncate" th:text="${course.getName()}">Course title</h5>
-                                    <p class="card-text overflow" th:text="${course.getCourseDescription().getText()}">
-                                        Some quick example text of course and make up the bulk of the card's content.
-                                        Very huge chunk of text to test custom overflow.
-                                    </p>
+                                    <div class="card-text overflow">
+                                        <div class="card-text overflow">
+                                            <div th:utext="${course.getCourseDescription().getText()}">
+                                                Some quick example text of course and make up the bulk of the card's content.
+                                                Very huge chunk of text to test custom overflow.
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </a>

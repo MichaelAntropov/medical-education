@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <title>Create course</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="../../../../../static/css/bootstrap.css">
+    <link rel="stylesheet" href="../../../../../static/css/bootstrap-grid.css">
+
+    <link rel="stylesheet" href="../../../../../static/css/custom.css">
+    <link rel="stylesheet" href="../../../../../static/css/tempusdominus-bootstrap-4.css">
+    <!--===============================================================================================-->
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-primary">
+
+    <div class="container flex-row">
+        <div class="btn-lg text-light text-capitalize d-md-none" type="button" onclick="openNav()">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-menu-app" fill="currentColor"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M0 1.5A1.5 1.5 0 0 1 1.5 0h2A1.5 1.5 0 0 1 5 1.5v2A1.5 1.5 0 0 1 3.5 5h-2A1.5 1.5 0 0 1 0 3.5v-2zM1.5 1a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-2zM14 7H2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM2 6a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H2z"/>
+                <path fill-rule="evenodd"
+                      d="M15 11H1v-1h14v1zM2 12.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+        </div>
+
+        <a class="navbar-brand" th:href="@{/}">
+            <img src="../../../../../static/img/logo.png" alt="Logo" style="width:40px">
+            Hizencode
+        </a>
+
+        <button class="navbar-toggler collapsed" type="button"
+                data-toggle="collapse" data-target="#navbarsExample05"
+                aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="navbar-collapse collapse " id="navbarsExample05" style="">
+            <ul class="navbar-nav ml-auto main-menu-nav
+					 d-flex justify-content-center align-items-center">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Project<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Courses<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Contacts<span class="sr-only">(current)</span></a>
+                </li>
+
+                <div class="d-none d-md-block pr-4"></div>
+
+                <div class="d-none d-md-block pr-4 border-left border-light" style="height: 30px"></div>
+
+                <div class="d-sm-block d-md-none border-bottom border-light" style="width: 90%"></div>
+
+                <!-- Shown only to authorized users-->
+                <li sec:authorize="isAuthenticated()" class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" th:href="@{/templates/user-dashboard}"
+                       th:text="${#authentication.getPrincipal().getEmail()}">Name
+                    </a>
+                    <div class="dropdown-menu">
+                        <form th:action="@{/logout}" method="post">
+                            <input class="dropdown-item" type="submit" value="Log out">
+                        </form>
+                    </div>
+                </li>
+
+                <!-- Shown only to visitors -->
+                <li sec:authorize="!isAuthenticated()" class="nav-item active ">
+                    <a class="nav-link" th:href="@{/templates/login}">Sign in<span class="sr-only">(current)</span></a>
+                </li>
+
+                <li sec:authorize="!isAuthenticated()" class="nav-item active">
+                    <a class="nav-link" th:href="@{/templates/registration}">Sign up<span
+                            class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+<div class="d-flex">
+
+    <!-- Sidebar -->
+    <div class="sidebar-wrapper bg-light border-right d-none d-md-block">
+        <div class="list-group list-group-flush">
+            <a href="#" class="list-group-item list-group-item-action bg-light">My profile</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">My courses</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">My certificates</a>
+            <a sec:authorize="hasRole('ADMIN')" href="/user-dashboard/manage-courses"
+               class="list-group-item list-group-item-action bg-light">Manage courses</a>
+        </div>
+    </div>
+
+    <!-- Sidebar for mobile -->
+    <div id="sidenav" class="sidenav bg-light border-right d-md-none">
+        <a href="#" class="btn-close" onclick="closeNav()">&times;</a>
+        <div class="list-group list-group-flush">
+            <a href="#" class="list-group-item list-group-item-action bg-light">My profile</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">My courses</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">My certificates</a>
+            <a sec:authorize="hasRole('ADMIN')" href="/user-dashboard/manage-courses"
+               class="list-group-item list-group-item-action bg-light">Manage courses</a>
+        </div>
+    </div>
+
+    <!-- Dark Overlay element -->
+    <div id="sidenav-overlay" class="sidenav-overlay  d-md-none"></div>
+
+    <!-- Page Content -->
+    <div class="container-fluid mt-5">
+        <div class="card mb-5">
+            <div class="card-body">
+                <div class="card-header mb-5">
+                    <div class="row">
+                        <div class="col-12">
+                            <h5 class="text">Course name</h5>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <h5 class="text">Lessons: </h5>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="thead-light">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>Name</td>
+                                <td>Type</td>
+                                <td class="w-25">
+                                    <div class="container d-flex pl-0" >
+                                        <div class="btn-group-sm btn-group ml-0 mr-2">
+                                            <div class="btn btn-light btn-outline-info">
+                                                &#9650;
+                                            </div>
+                                            <div class="btn btn-light btn-outline-info">
+                                                &#9660;
+                                            </div>
+                                        </div>
+                                        <div class="btn btn-outline-primary mr-1">
+                                            Edit
+                                        </div>
+                                        <div class="btn btn-outline-danger mr-1">
+                                            Delete
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="btn btn-primary">
+                                Add new lesson
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+<!-- Menu Toggle Script -->
+<script type="text/javascript">
+
+    function openNav() {
+        document.getElementById("sidenav").style.visibility = "visible";
+        document.getElementById("sidenav").style.width = "250px";
+
+        document.getElementById("sidenav-overlay").style.display = "block";
+    }
+
+    /* Set the width of the side navigation to 0 */
+    function closeNav() {
+        document.getElementById("sidenav").style.width = "0px";
+        document.getElementById("sidenav").style.visibility = "hidden";
+
+        document.getElementById("sidenav-overlay").style.display = "none";
+    }
+</script>
+</body>
+</html>
