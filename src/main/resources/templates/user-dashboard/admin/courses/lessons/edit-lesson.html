@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       lang="en">
 <head>
-    <title>Create course</title>
+    <title>Course lesson</title>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="../../../../../static/css/bootstrap-grid.css">
 
     <link rel="stylesheet" href="../../../../../static/css/custom.css">
-    <link rel="stylesheet" href="../../../../../static/css/tempusdominus-bootstrap-4.css">
     <!--===============================================================================================-->
 </head>
 <body>
@@ -118,76 +117,48 @@
     <div class="container-fluid mt-5">
         <div class="card mb-5">
             <div class="card-body">
-                <div class="card-header mb-5">
+                <form th:action="@{/user-dashboard/manage-courses/course/lessons/edit/save}" th:object="${lesson}" method="post">
+                    <input type="hidden" th:field="*{id}">
+                    <input type="hidden" th:field="*{courseId}">
+                    <!-- Title -->
                     <div class="row">
                         <div class="col-12">
-                            <h5 class="text" th:text="${courseName}">Course name</h5>
+                            <h6 class="text">Title</h6>
                         </div>
                     </div>
-                </div>
-
-                <div class="container-fluid">
+                    <div class="row  mb-3">
+                        <div class="col-12">
+                            <input class="form-control form-control-lg" type="text" placeholder="Enter title"
+                                   aria-label="Title"
+                                   th:field="*{title}">
+                        </div>
+                    </div>
+                    <!-- Content -->
                     <div class="row">
                         <div class="col-12">
-                            <h5 class="text">Lessons: </h5>
+                            <h6 class="text">Content</h6>
                         </div>
                     </div>
-                    <div th:if="${lessons.isEmpty()}">
-                        <p class="text-muted">No content</p>
-                    </div>
-                    <div th:if="${!lessons.isEmpty()}" class="table-responsive">
-                        <table class="table">
-                            <thead class="thead-light">
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Title</th>
-                                <th scope="col">Type</th>
-                                <th scope="col">Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="lesson : ${lessons}">
-                                <th scope="row" th:text="${lesson.getOrderNumber()}">1</th>
-                                <td th:text="${lesson.getTitle()}">Title</td>
-                                <td>Lesson</td>
-                                <td class="w-25">
-                                    <div class="container d-flex pl-0" >
-                                        <div class="btn-group-sm btn-group ml-0 mr-2">
-                                            <form th:action="@{/user-dashboard/manage-courses/course/lessons/lesson/up}" method="post">
-                                                <input type="hidden" th:name="lessonId" th:value="${lesson.getId()}">
-                                                <input type="submit" class="btn btn-light btn-outline-info" value="&#9650;"
-                                                       th:unless="${lesson.getOrderNumber() == 1}" >
-                                            </form>
-                                            <form th:action="@{/user-dashboard/manage-courses/course/lessons/lesson/down}" method="post">
-                                                <input type="hidden" th:name="lessonId" th:value="${lesson.getId()}">
-                                                <input type="submit" class="btn btn-light btn-outline-info" value="&#9660;"
-                                                       th:unless="${lesson.getOrderNumber() == lessonCount}">
-                                            </form>
-                                        </div>
-                                        <a class="btn btn-outline-primary mr-1"
-                                             th:href="@{/user-dashboard/manage-courses/course{courseId}/lessons/lesson{lessonId}/edit(courseId = ${courseId}, lessonId=${lesson.getId()})}">
-                                            Edit
-                                        </a>
-                                        <form th:action="@{/user-dashboard/manage-courses/course/lessons/lesson/delete}" method="post">
-                                            <input type="hidden" th:name="lessonId" th:value="${lesson.getId()}">
-                                            <input type="submit" class="btn btn-outline-danger mr-1" value="Delete">
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="row">
+                    <div class="row  mb-3">
                         <div class="col-12">
-                            <a class="btn btn-primary" th:href="@{/user-dashboard/manage-courses/course{courseId}/lessons/create(courseId=${courseId})}">
-                                Add new lesson
-                            </a>
+                            <textarea id="content" name="content" aria-label="Lesson content"
+                                      th:field="*{content}"></textarea>
                         </div>
                     </div>
-                </div>
-
+                    <!-- Save button -->
+                    <div class="row mb-3">
+                        <div class="col">
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <button class="btn btn-primary" style="width: 100px" type="submit">
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -201,6 +172,41 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
         integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
         crossorigin="anonymous"></script>
+
+<!--TinyMCE-->
+<script src="https://cdn.tiny.cloud/1/lcg796hp4bzkx6aefkdtwy7fwx0r6vx124a5b3jcq7269bsb/tinymce/5/tinymce.min.js"
+        referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: '#content',
+        plugins: 'lists advlist link image code media table',
+        height: '40vh',
+        toolbar: [
+            {
+                name: 'history', items: [ 'undo', 'redo' ]
+            },
+            {
+                name: 'styles', items: [ 'styleselect' ]
+            },
+            {
+                name: 'formatting', items: [ 'bold', 'italic']
+            },
+            {
+                name: 'alignment', items: [ 'alignleft', 'aligncenter', 'alignright', 'alignjustify' ]
+            },
+            {
+                name: 'indentation', items: [ 'outdent', 'indent' ]
+            },
+            {
+                name: 'lists', items: [ 'bullist', 'numlist' ]
+            },
+            {
+                name: 'insert', items: [ 'link', 'image', 'media', 'table']
+            }
+        ]
+    });
+</script>
+
 <!-- Menu Toggle Script -->
 <script type="text/javascript">
 

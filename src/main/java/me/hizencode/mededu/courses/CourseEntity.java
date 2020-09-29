@@ -25,6 +25,9 @@ public class CourseEntity {
     @JoinColumn(name = "course_description_id", referencedColumnName = "id")
     private CourseDescriptionEntity courseDescription;
 
+    @Column(name = "lesson_count")
+    private int lessonCount;
+
     @Column(name = "creation_date")
     private Date creationDate;
 
@@ -54,6 +57,14 @@ public class CourseEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getLessonCount() {
+        return lessonCount;
+    }
+
+    public void setLessonCount(int lessonCount) {
+        this.lessonCount = lessonCount;
     }
 
     public Date getEditDate() {

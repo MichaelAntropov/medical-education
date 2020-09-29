@@ -117,10 +117,47 @@
     <div class="container-fluid mt-5">
         <div class="card mb-5">
             <div class="card-body">
-
-                <textarea id="mytextarea" name="mytextarea" aria-label="Lesson content">
-
-                </textarea>
+                <form th:action="@{/user-dashboard/manage-courses/course/lessons/create/save}" th:object="${lesson}" method="post">
+                    <input type="hidden" th:field="*{courseId}">
+                    <!-- Title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="text">Title</h6>
+                        </div>
+                    </div>
+                    <div class="row  mb-3">
+                        <div class="col-12">
+                            <input class="form-control form-control-lg" type="text" placeholder="Enter title"
+                                   aria-label="Title"
+                                   th:field="*{title}">
+                        </div>
+                    </div>
+                    <!-- Content -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="text">Content</h6>
+                        </div>
+                    </div>
+                    <div class="row  mb-3">
+                        <div class="col-12">
+                            <textarea id="content" name="content" aria-label="Lesson content"
+                                      th:field="*{content}"></textarea>
+                        </div>
+                    </div>
+                    <!-- Save button -->
+                    <div class="row mb-3">
+                        <div class="col">
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <button class="btn btn-primary" style="width: 100px" type="submit">
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -140,8 +177,9 @@
         referrerpolicy="origin"></script>
 <script>
     tinymce.init({
-        selector: '#mytextarea',
-        plugins: 'lists advlist link image code media',
+        selector: '#content',
+        plugins: 'lists advlist link image code media table',
+        height: '40vh',
         toolbar: [
             {
                 name: 'history', items: [ 'undo', 'redo' ]
@@ -162,7 +200,7 @@
                 name: 'lists', items: [ 'bullist', 'numlist' ]
             },
             {
-                name: 'insert', items: [ 'link', 'image', 'media']
+                name: 'insert', items: [ 'link', 'image', 'media', 'table']
             }
         ]
     });

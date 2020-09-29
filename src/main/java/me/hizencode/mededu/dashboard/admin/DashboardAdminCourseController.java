@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-public class DashboardAdminController {
+public class DashboardAdminCourseController {
 
     /*Fields*/
     /*================================================================================================================*/

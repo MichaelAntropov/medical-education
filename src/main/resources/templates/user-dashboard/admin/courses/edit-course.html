@@ -278,10 +278,30 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <textarea id="description" name="description" class="form-control" placeholder="Enter a course description"
+                                <textarea id="description" name="description" class="form-control vh-100" placeholder="Enter a course description"
                                           aria-label="Course description"
                                           rows="10"
                                           th:field="*{description}"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row mb-3">
+                            <div class="col">
+                                <hr>
+                            </div>
+                        </div>
+
+                        <!-- Course content -->
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <h5 class="text">Course content</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <a class="btn btn-info" th:href="@{/user-dashboard/manage-courses/course{courseId}/lessons(courseId = ${courseId})}">
+                                    Edit course content
+                                </a>
                             </div>
                         </div>
 
