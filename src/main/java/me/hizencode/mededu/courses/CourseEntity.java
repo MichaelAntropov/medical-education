@@ -1,5 +1,6 @@
 package me.hizencode.mededu.courses;
 
+import me.hizencode.mededu.lessons.LessonEntity;
 import me.hizencode.mededu.specialities.SpecialityEntity;
 
 import javax.persistence.*;
@@ -39,6 +40,14 @@ public class CourseEntity {
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "speciality_id"))
     private List<SpecialityEntity> specialities;
+
+    @OneToMany(
+            mappedBy = "course",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    private List<LessonEntity> lessons;
 
     public CourseEntity() {
     }
@@ -105,6 +114,14 @@ public class CourseEntity {
 
     public void setSpecialities(List<SpecialityEntity> specialities) {
         this.specialities = specialities;
+    }
+
+    public List<LessonEntity> getLessons() {
+        return lessons;
+    }
+
+    public void setLessons(List<LessonEntity> lessons) {
+        this.lessons = lessons;
     }
 
     @Override

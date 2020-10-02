@@ -278,7 +278,8 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <textarea id="description" name="description" class="form-control vh-100" placeholder="Enter a course description"
+                                <textarea id="description" name="description" class="form-control vh-100"
+                                          placeholder="Enter a course description"
                                           aria-label="Course description"
                                           rows="10"
                                           th:field="*{description}"></textarea>
@@ -299,7 +300,8 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <a class="btn btn-info" th:href="@{/user-dashboard/manage-courses/course{courseId}/lessons(courseId = ${courseId})}">
+                                <a class="btn btn-info"
+                                   th:href="@{/user-dashboard/manage-courses/course{courseId}/lessons(courseId = ${courseId})}">
                                     Edit course content
                                 </a>
                             </div>
@@ -319,19 +321,19 @@
                             <div class="col">
                                 <!-- Button trigger modal -->
                                 <button type="button" class="btn btn-danger float-right" style="width: 100px"
-                                        data-toggle="modal" data-target="#exampleModalCenter">
+                                        data-toggle="modal" data-target="#deleteModal">
                                     Delete
                                 </button>
                             </div>
                         </div>
                     </form>
                     <!-- Modal -->
-                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
-                         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
+                         aria-labelledby="modalTitle" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalCenterTitle">Delete course?</h5>
+                                    <h5 class="modal-title" id="modalTitle">Delete course?</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -340,9 +342,8 @@
                                     Are you sure you want to delete this course?
                                 </div>
                                 <div class="modal-footer">
-                                    <form th:action="@{/user-dashboard/manage-courses/delete}" th:object="${course}"
-                                          method="post">
-                                        <input type="hidden" aria-label="course id" name="courseId"
+                                    <form th:action="@{/user-dashboard/manage-courses/delete}" method="post">
+                                        <input type="hidden" aria-label="course id" th:name="courseId"
                                                th:value="*{courseId}">
                                         <button class="btn btn-danger float-right" style="width: 100px" type="submit">
                                             Delete
@@ -426,25 +427,25 @@
         plugins: 'lists advlist link image code media',
         toolbar: [
             {
-                name: 'history', items: [ 'undo', 'redo' ]
+                name: 'history', items: ['undo', 'redo']
             },
             {
-                name: 'styles', items: [ 'styleselect' ]
+                name: 'styles', items: ['styleselect']
             },
             {
-                name: 'formatting', items: [ 'bold', 'italic']
+                name: 'formatting', items: ['bold', 'italic']
             },
             {
-                name: 'alignment', items: [ 'alignleft', 'aligncenter', 'alignright', 'alignjustify' ]
+                name: 'alignment', items: ['alignleft', 'aligncenter', 'alignright', 'alignjustify']
             },
             {
-                name: 'indentation', items: [ 'outdent', 'indent' ]
+                name: 'indentation', items: ['outdent', 'indent']
             },
             {
-                name: 'lists', items: [ 'bullist', 'numlist' ]
+                name: 'lists', items: ['bullist', 'numlist']
             },
             {
-                name: 'insert', items: [ 'link', 'image', 'media']
+                name: 'insert', items: ['link', 'image', 'media']
             }
         ]
     });

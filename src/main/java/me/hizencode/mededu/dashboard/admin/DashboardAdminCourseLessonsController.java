@@ -43,7 +43,7 @@ public class DashboardAdminCourseLessonsController {
         //Check if the course exists if no return to main page
         Optional<CourseEntity> courseEntity = courseService.getCourseById(courseId);
 
-        if(courseEntity.isEmpty()) {
+        if (courseEntity.isEmpty()) {
             return "redirect:/user-dashboard/manage-courses";
         }
 
@@ -71,12 +71,11 @@ public class DashboardAdminCourseLessonsController {
     }
 
     @PostMapping("/user-dashboard/manage-courses/course/lessons/create/save")
-    private String saveCreatedLesson(@ModelAttribute(name = "lesson") AdminLessonDto adminLessonDto,
-                                     Model model) {
+    private String saveCreatedLesson(@ModelAttribute(name = "lesson") AdminLessonDto adminLessonDto) {
 
         Optional<CourseEntity> courseEntityOptional = courseService.getCourseById(adminLessonDto.getCourseId());
 
-        if(courseEntityOptional.isEmpty()) {
+        if (courseEntityOptional.isEmpty()) {
             return "redirect:/user-dashboard/manage-courses/course" + adminLessonDto.getCourseId() + "/lessons";
         }
 
@@ -85,7 +84,7 @@ public class DashboardAdminCourseLessonsController {
         LessonEntity lessonEntity = new LessonEntity();
 
         lessonEntity.setTitle(adminLessonDto.getTitle());
-        lessonEntity.setCourseId(courseEntity.getId());
+        lessonEntity.setCourse(courseEntity);
         lessonEntity.setContent(adminLessonDto.getContent());
 
         //Set order and update course
@@ -93,28 +92,18 @@ public class DashboardAdminCourseLessonsController {
         courseEntity.setLessonCount(courseEntity.getLessonCount() + 1);
         lessonService.saveNewLesson(courseEntity, lessonEntity);
 
-        return "redirect:/user-dashboard/manage-courses/course" + adminLessonDto.getCourseId() + "/lessons";
+        return "redirect:/user-dashboard/manage-courses/course" + courseEntity.getId() + "/lessons";
     }
 
     @GetMapping("/user-dashboard/manage-courses/course{courseId}/lessons/lesson{lessonId}/edit")
     private String editLesson(@PathVariable(name = "courseId") Integer courseId,
-                                @PathVariable(name = "lessonId") Integer lessonId,
-                                Model model) {
-
-        Optional<CourseEntity> courseEntity = courseService.getCourseById(courseId);
-
-        if(courseEntity.isEmpty()) {
-            return "redirect:/user-dashboard/manage-courses/course" + courseId + "/lessons";
-        }
+                              @PathVariable(name = "lessonId") Integer lessonId,
+                              Model model) {
 
         Optional<LessonEntity> lessonEntityOptional = lessonService.findById(lessonId);
 
-        if(lessonEntityOptional.isEmpty()) {
-            return "redirect:/user-dashboard/manage-courses/course" + courseId + "/lessons";
-        }
-
-        if(lessonEntityOptional.get().getCourseId() != courseId) {
-            return "redirect:/user-dashboard/manage-courses/course" + courseId + "/lessons";
+        if (lessonEntityOptional.isEmpty() || (lessonEntityOptional.get().getCourse().getId() != courseId)) {
+            return "redirect:/user-dashboard/manage-courses";
         }
 
         LessonEntity lessonEntity = lessonEntityOptional.get();
@@ -122,7 +111,7 @@ public class DashboardAdminCourseLessonsController {
         AdminLessonDto adminLessonDto = new AdminLessonDto();
 
         adminLessonDto.setId(lessonEntity.getId());
-        adminLessonDto.setCourseId(lessonEntity.getCourseId());
+        adminLessonDto.setCourseId(lessonEntity.getCourse().getId());
         adminLessonDto.setTitle(lessonEntity.getTitle());
         adminLessonDto.setContent(lessonEntity.getContent());
 
@@ -136,7 +125,7 @@ public class DashboardAdminCourseLessonsController {
 
         Optional<LessonEntity> lessonEntityOptional = lessonService.findById(adminLessonDto.getId());
 
-        if(lessonEntityOptional.isEmpty()) {
+        if (lessonEntityOptional.isEmpty()) {
             return "redirect:/user-dashboard/manage-courses/course" + adminLessonDto.getCourseId() + "/lessons";
         }
 
@@ -156,21 +145,22 @@ public class DashboardAdminCourseLessonsController {
         //Get lesson to move
         Optional<LessonEntity> lessonEntityOptional = lessonService.findById(lessonId);
 
-        if(lessonEntityOptional.isEmpty()) {
+        if (lessonEntityOptional.isEmpty()) {
             return "redirect:/user-dashboard/manage-courses";
         }
 
         LessonEntity lessonEntity = lessonEntityOptional.get();
+        CourseEntity courseEntity = lessonEntity.getCourse();
 
-        if(lessonEntity.getOrderNumber() == 1) {
-            return "redirect:/user-dashboard/manage-courses/course" + lessonEntity.getCourseId() + "/lessons";
+        if (lessonEntity.getOrderNumber() == 1) {
+            return "redirect:/user-dashboard/manage-courses/course" + courseEntity.getId() + "/lessons";
         }
 
         //Get lesson to switch with
         Optional<LessonEntity> previousLessonEntityOptional =
-                lessonService.findByCourseIdAndOrderNumber(lessonEntity.getCourseId(), lessonEntity.getOrderNumber() - 1);
+                lessonService.findByCourseIdAndOrderNumber(courseEntity.getId(), lessonEntity.getOrderNumber() - 1);
 
-        if(previousLessonEntityOptional.isEmpty()) {
+        if (previousLessonEntityOptional.isEmpty()) {
             return "redirect:/user-dashboard/manage-courses";
         }
 
@@ -184,7 +174,7 @@ public class DashboardAdminCourseLessonsController {
 
         lessonService.saveAll(List.of(lessonEntity, previousLessonEntity));
 
-        return "redirect:/user-dashboard/manage-courses/course" + lessonEntity.getCourseId() + "/lessons";
+        return "redirect:/user-dashboard/manage-courses/course" + courseEntity.getId() + "/lessons";
     }
 
     @PostMapping("/user-dashboard/manage-courses/course/lessons/lesson/down")
@@ -192,24 +182,23 @@ public class DashboardAdminCourseLessonsController {
         //Get lesson to move
         Optional<LessonEntity> lessonEntityOptional = lessonService.findById(lessonId);
 
-        if(lessonEntityOptional.isEmpty()) {
+        if (lessonEntityOptional.isEmpty()) {
             return "redirect:/user-dashboard/manage-courses";
         }
 
         LessonEntity lessonEntity = lessonEntityOptional.get();
+        CourseEntity courseEntity = lessonEntity.getCourse();
 
-        //Get the course to know how many lessons there
-        Optional<CourseEntity> courseEntityOptional = courseService.getCourseById(lessonEntity.getCourseId());
 
-        if(courseEntityOptional.isEmpty() || (lessonEntity.getOrderNumber() == courseEntityOptional.get().getLessonCount())) {
-            return "redirect:/user-dashboard/manage-courses/course" + lessonEntity.getCourseId() + "/lessons";
+        if (lessonEntity.getOrderNumber() == courseEntity.getLessonCount()) {
+            return "redirect:/user-dashboard/manage-courses/course" + courseEntity.getId() + "/lessons";
         }
 
         //Get lesson to switch with
         Optional<LessonEntity> nextLessonEntityOptional =
-                lessonService.findByCourseIdAndOrderNumber(lessonEntity.getCourseId(), lessonEntity.getOrderNumber() + 1);
+                lessonService.findByCourseIdAndOrderNumber(courseEntity.getId(), lessonEntity.getOrderNumber() + 1);
 
-        if(nextLessonEntityOptional.isEmpty()) {
+        if (nextLessonEntityOptional.isEmpty()) {
             return "redirect:/user-dashboard/manage-courses";
         }
 
@@ -223,20 +212,22 @@ public class DashboardAdminCourseLessonsController {
 
         lessonService.saveAll(List.of(lessonEntity, nextLessonEntity));
 
-        return "redirect:/user-dashboard/manage-courses/course" + lessonEntity.getCourseId() + "/lessons";
+        return "redirect:/user-dashboard/manage-courses/course" + courseEntity.getId() + "/lessons";
     }
 
     @PostMapping("/user-dashboard/manage-courses/course/lessons/lesson/delete")
-    private String editLesson(@RequestParam(name = "lessonId") Integer lessonId) {
+    private String deleteLesson(@RequestParam(name = "lessonId") Integer lessonId) {
         //Get lesson to delete
         Optional<LessonEntity> lessonEntityOptional = lessonService.findById(lessonId);
 
-        if(lessonEntityOptional.isEmpty()) {
+        if (lessonEntityOptional.isEmpty()) {
             return "redirect:/user-dashboard/manage-courses";
         }
         LessonEntity lessonEntity = lessonEntityOptional.get();
+        //Get the course to change amount of lessons
+        CourseEntity courseEntity = lessonEntity.getCourse();
 
-        List<LessonEntity> lessonEntities = lessonService.findAllByCourseIdOrderByOrderNumber(lessonEntity.getCourseId());
+        List<LessonEntity> lessonEntities = lessonService.findAllByCourseIdOrderByOrderNumber(courseEntity.getId());
 
         lessonEntities.removeIf(lesson -> lesson.getId() == lessonEntity.getId());
 
@@ -245,9 +236,11 @@ public class DashboardAdminCourseLessonsController {
             LessonEntity lesson = lessonEntities.get(i);
             lesson.setOrderNumber(i + 1);
         }
+        //Reset amount of lessons in the course
+        courseEntity.setLessonCount(courseEntity.getLessonCount() - 1);
 
-        lessonService.deleteLessonAndSaveList(lessonEntity, lessonEntities);
+        lessonService.deleteLessonAndSaveList(courseEntity, lessonEntity, lessonEntities);
 
-        return "redirect:/user-dashboard/manage-courses/course" + lessonEntity.getCourseId() + "/lessons";
+        return "redirect:/user-dashboard/manage-courses/course" + courseEntity.getId() + "/lessons";
     }
 }

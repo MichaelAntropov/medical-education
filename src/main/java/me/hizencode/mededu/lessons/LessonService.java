@@ -23,5 +23,5 @@ public interface LessonService {
 
     void saveAll(List<LessonEntity> lessonEntities);
 
-    void deleteLessonAndSaveList(LessonEntity lessonEntity, List<LessonEntity> lessonEntities);
+    void deleteLessonAndSaveList(CourseEntity courseEntity, LessonEntity lessonEntity, List<LessonEntity> lessonEntities);
 }

@@ -76,7 +76,8 @@ public class LessonServiceImpl implements LessonService{
 
     @Override
     @Transactional
-    public void deleteLessonAndSaveList(LessonEntity lessonEntity, List<LessonEntity> lessonEntities) {
+    public void deleteLessonAndSaveList(CourseEntity courseEntity, LessonEntity lessonEntity, List<LessonEntity> lessonEntities) {
+        courseService.saveCourse(courseEntity);
         lessonRepository.delete(lessonEntity);
         saveAll(lessonEntities);
     }

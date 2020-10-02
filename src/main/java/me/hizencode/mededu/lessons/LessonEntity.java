@@ -1,9 +1,8 @@
 package me.hizencode.mededu.lessons;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import me.hizencode.mededu.courses.CourseEntity;
+
+import javax.persistence.*;
 
 @Entity
 @Table(schema = "doctor_management", name = "lesson")
@@ -13,8 +12,8 @@ public class LessonEntity {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "course_id")
-    private int courseId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private CourseEntity course;
 
     @Column(name = "order_number")
     private int orderNumber;
@@ -36,12 +35,12 @@ public class LessonEntity {
         this.id = id;
     }
 
-    public int getCourseId() {
-        return courseId;
+    public CourseEntity getCourse() {
+        return course;
     }
 
-    public void setCourseId(int courseId) {
-        this.courseId = courseId;
+    public void setCourse(CourseEntity courseId) {
+        this.course = courseId;
     }
 
     public String getTitle() {
@@ -72,6 +71,8 @@ public class LessonEntity {
     public String toString() {
         return "LessonEntity{" +
                 "id=" + id +
+                ", courseId=" + course.getId() +
+                ", orderNumber=" + orderNumber +
                 ", title='" + title + '\'' +
                 '}';
     }
