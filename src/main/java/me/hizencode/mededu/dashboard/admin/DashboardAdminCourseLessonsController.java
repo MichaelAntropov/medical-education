@@ -6,11 +6,15 @@ import me.hizencode.mededu.dashboard.admin.dto.AdminLessonDto;
 import me.hizencode.mededu.lessons.LessonEntity;
 import me.hizencode.mededu.lessons.LessonIdTitleOrderNumberOnly;
 import me.hizencode.mededu.lessons.LessonService;
+import me.hizencode.mededu.lessons.media.LessonMediaEntity;
+import me.hizencode.mededu.lessons.media.LessonMediaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +27,8 @@ public class DashboardAdminCourseLessonsController {
 
     private CourseService courseService;
 
+    private LessonMediaService lessonMediaService;
+
     /*Setters*/
     /*================================================================================================================*/
     @Autowired
@@ -33,6 +39,11 @@ public class DashboardAdminCourseLessonsController {
     @Autowired
     public void setCourseService(CourseService courseService) {
         this.courseService = courseService;
+    }
+
+    @Autowired
+    public void setLessonMediaService(LessonMediaService lessonMediaService) {
+        this.lessonMediaService = lessonMediaService;
     }
 
     /*Methods*/
@@ -85,14 +96,13 @@ public class DashboardAdminCourseLessonsController {
 
         lessonEntity.setTitle(adminLessonDto.getTitle());
         lessonEntity.setCourse(courseEntity);
-        lessonEntity.setContent(adminLessonDto.getContent());
 
         //Set order and update course
         lessonEntity.setOrderNumber(courseEntity.getLessonCount() + 1);
         courseEntity.setLessonCount(courseEntity.getLessonCount() + 1);
-        lessonService.saveNewLesson(courseEntity, lessonEntity);
+        int lessonId = lessonService.saveNewLesson(courseEntity, lessonEntity);
 
-        return "redirect:/user-dashboard/manage-courses/course" + courseEntity.getId() + "/lessons";
+        return "redirect:/user-dashboard/manage-courses/course" + courseEntity.getId() + "/lessons/lesson" + lessonId + "/edit";
     }
 
     @GetMapping("/user-dashboard/manage-courses/course{courseId}/lessons/lesson{lessonId}/edit")
@@ -114,6 +124,9 @@ public class DashboardAdminCourseLessonsController {
         adminLessonDto.setCourseId(lessonEntity.getCourse().getId());
         adminLessonDto.setTitle(lessonEntity.getTitle());
         adminLessonDto.setContent(lessonEntity.getContent());
+
+        List<LessonMediaEntity> mediaEntityList = lessonMediaService.findAllByLessonId(lessonEntity.getId());
+        adminLessonDto.setMediaList(mediaEntityList);
 
         model.addAttribute("lesson", adminLessonDto);
 
@@ -242,5 +255,81 @@ public class DashboardAdminCourseLessonsController {
         lessonService.deleteLessonAndSaveList(courseEntity, lessonEntity, lessonEntities);
 
         return "redirect:/user-dashboard/manage-courses/course" + courseEntity.getId() + "/lessons";
+    }
+
+    @PostMapping("/user-dashboard/manage-courses/course/lessons/lesson/upload/media/image")
+    private String uploadImage(@RequestParam(name = "courseId") Integer courseId,
+                               @RequestParam(name = "lessonId") Integer lessonId,
+                               @RequestParam("image") MultipartFile image) {
+
+        Optional<LessonEntity> lessonEntity = lessonService.findById(lessonId);
+
+        if (lessonEntity.isEmpty()) {
+            return "redirect:/user-dashboard/manage-courses/course" + courseId + "/lessons";
+        }
+
+        //Get and save image
+        if (!image.isEmpty()) {
+            LessonMediaEntity mediaEntity = new LessonMediaEntity();
+            mediaEntity.setName(image.getOriginalFilename());
+            //TODO: Check type of the file
+            mediaEntity.setType(image.getContentType());
+            try {
+                mediaEntity.setData(image.getInputStream().readAllBytes());
+                mediaEntity.setLesson(lessonEntity.get());
+
+                lessonMediaService.save(mediaEntity);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return "redirect:/user-dashboard/manage-courses/course" + courseId + "/lessons/lesson" + lessonId + "/edit";
+    }
+
+    @PostMapping("/user-dashboard/manage-courses/course/lessons/lesson/upload/media/pdf")
+    private String uploadPdf(@RequestParam(name = "courseId") Integer courseId,
+                             @RequestParam(name = "lessonId") Integer lessonId,
+                             @RequestParam("pdfFile") MultipartFile pdfFile) {
+
+        Optional<LessonEntity> lessonEntity = lessonService.findById(lessonId);
+
+        if (lessonEntity.isEmpty()) {
+            return "redirect:/user-dashboard/manage-courses/course" + courseId + "/lessons";
+        }
+
+        //Get and save image
+        if (!pdfFile.isEmpty()) {
+            LessonMediaEntity mediaEntity = new LessonMediaEntity();
+            mediaEntity.setName(pdfFile.getOriginalFilename());
+            //TODO: Check type of the file
+            mediaEntity.setType("application/pdf");
+            try {
+                mediaEntity.setData(pdfFile.getInputStream().readAllBytes());
+                mediaEntity.setLesson(lessonEntity.get());
+
+                lessonMediaService.save(mediaEntity);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return "redirect:/user-dashboard/manage-courses/course" + courseId + "/lessons/lesson" + lessonId + "/edit";
+    }
+
+    @PostMapping("/user-dashboard/manage-courses/course/lessons/lesson/delete/media")
+    private String deleteMedia(@RequestParam(name = "courseId") Integer courseId,
+                               @RequestParam(name = "lessonId") Integer lessonId,
+                               @RequestParam(name = "mediaId") Integer mediaId) {
+
+        Optional<LessonMediaEntity> mediaEntity = lessonMediaService.findById(mediaId);
+
+        if (mediaEntity.isEmpty()) {
+            return "redirect:/user-dashboard/manage-courses/course" + courseId + "/lessons";
+        }
+
+        lessonMediaService.delete(mediaEntity.get());
+
+        return "redirect:/user-dashboard/manage-courses/course" + courseId + "/lessons/lesson" + lessonId + "/edit";
     }
 }

@@ -181,6 +181,7 @@ public class DashboardAdminCourseController {
         if (!image.isEmpty()) {
             ImageEntity imageEntity = new ImageEntity();
             imageEntity.setName(image.getOriginalFilename());
+            //TODO: Check type of the file
             imageEntity.setType(image.getContentType());
             try {
                 imageEntity.setData(image.getInputStream().readAllBytes());

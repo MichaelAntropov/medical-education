@@ -17,7 +17,14 @@ public interface LessonService {
 
     void saveLesson(LessonEntity lessonEntity);
 
-    void saveNewLesson(CourseEntity courseEntity, LessonEntity lessonEntity);
+    /**
+     * Saves new lesson and returns its id.
+     *
+     * @param courseEntity course which the lesson belongs to
+     * @param lessonEntity lesson to save
+     * @return returns the id of the lesson
+     */
+    Integer saveNewLesson(CourseEntity courseEntity, LessonEntity lessonEntity);
 
     Optional<LessonEntity> findByCourseIdAndOrderNumber(int courseId, int orderNumber);
 

@@ -59,9 +59,11 @@ public class LessonServiceImpl implements LessonService{
 
     @Override
     @Transactional
-    public void saveNewLesson(CourseEntity courseEntity, LessonEntity lessonEntity) {
-        lessonRepository.save(lessonEntity);
+    public Integer saveNewLesson(CourseEntity courseEntity, LessonEntity lessonEntity) {
+        LessonEntity savedLesson = lessonRepository.save(lessonEntity);
         courseService.saveCourse(courseEntity);
+
+        return savedLesson.getId();
     }
 
     @Override

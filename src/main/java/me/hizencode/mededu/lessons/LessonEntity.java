@@ -1,19 +1,29 @@
 package me.hizencode.mededu.lessons;
 
 import me.hizencode.mededu.courses.CourseEntity;
+import me.hizencode.mededu.lessons.media.LessonMediaEntity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(schema = "doctor_management", name = "lesson")
 public class LessonEntity {
 
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private CourseEntity course;
+
+    @OneToMany(
+            mappedBy = "lesson",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    private List<LessonMediaEntity> media;
 
     @Column(name = "order_number")
     private int orderNumber;
@@ -65,6 +75,14 @@ public class LessonEntity {
 
     public Integer getOrderNumber() {
         return orderNumber;
+    }
+
+    public List<LessonMediaEntity> getMedia() {
+        return media;
+    }
+
+    public void setMedia(List<LessonMediaEntity> media) {
+        this.media = media;
     }
 
     @Override

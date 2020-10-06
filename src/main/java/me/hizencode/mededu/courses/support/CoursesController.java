@@ -1,7 +1,9 @@
-package me.hizencode.mededu.courses;
+package me.hizencode.mededu.courses.support;
 
-import me.hizencode.mededu.courses.dto.CourseDto;
-import me.hizencode.mededu.courses.dto.SearchDataDto;
+import me.hizencode.mededu.courses.CourseEntity;
+import me.hizencode.mededu.courses.CourseService;
+import me.hizencode.mededu.courses.support.dto.CourseDto;
+import me.hizencode.mededu.courses.support.dto.SearchDataDto;
 import me.hizencode.mededu.specialities.SpecialityEntity;
 import me.hizencode.mededu.specialities.SpecialityService;
 import org.springframework.beans.factory.annotation.Autowired;

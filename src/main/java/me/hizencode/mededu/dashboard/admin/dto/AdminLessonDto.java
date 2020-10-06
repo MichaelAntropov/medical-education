@@ -1,5 +1,9 @@
 package me.hizencode.mededu.dashboard.admin.dto;
 
+import me.hizencode.mededu.lessons.media.LessonMediaEntity;
+
+import java.util.List;
+
 public class AdminLessonDto {
 
     private int id;
@@ -9,6 +13,8 @@ public class AdminLessonDto {
     private String title;
 
     private String content;
+
+    private List<LessonMediaEntity> mediaList;
 
     public AdminLessonDto() {
     }
@@ -43,6 +49,14 @@ public class AdminLessonDto {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public List<LessonMediaEntity> getMediaList() {
+        return mediaList;
+    }
+
+    public void setMediaList(List<LessonMediaEntity> mediaList) {
+        this.mediaList = mediaList;
     }
 
     @Override

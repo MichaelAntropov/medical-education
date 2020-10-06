@@ -1,4 +1,4 @@
-package me.hizencode.mededu.courses.dto;
+package me.hizencode.mededu.courses.support.dto;
 
 import java.util.List;
 

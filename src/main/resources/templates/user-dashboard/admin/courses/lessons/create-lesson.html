@@ -129,22 +129,11 @@
                         <div class="col-12">
                             <input class="form-control form-control-lg" type="text" placeholder="Enter title"
                                    aria-label="Title"
+                                   id="title"
                                    th:field="*{title}">
                         </div>
                     </div>
-                    <!-- Content -->
-                    <div class="row">
-                        <div class="col-12">
-                            <h6 class="text">Content</h6>
-                        </div>
-                    </div>
-                    <div class="row  mb-3">
-                        <div class="col-12">
-                            <textarea id="content" name="content" aria-label="Lesson content"
-                                      th:field="*{content}"></textarea>
-                        </div>
-                    </div>
-                    <!-- Save button -->
+                    <!-- Create button -->
                     <div class="row mb-3">
                         <div class="col">
                             <hr>
@@ -152,11 +141,35 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            <button class="btn btn-primary" style="width: 100px" type="submit">
-                                Save
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-primary"
+                                    data-toggle="modal" data-target="#createModal" onclick="setBody()">
+                                Continue
                             </button>
                         </div>
                     </div>
+
+                    <!-- Create Modal -->
+                    <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalTitle">Create new lesson</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div id="createModalBody" class="modal-body">
+                                    Create new lesson with name: ?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Create lesson</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </form>
             </div>
         </div>
@@ -171,39 +184,13 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
         integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
         crossorigin="anonymous"></script>
+<!-- Modal Script -->
+<script type="text/javascript">
+    function setBody() {
+        document.getElementById("createModalBody").textContent
+            = "Create new lesson with name: \"" +  document.getElementById("title").value + "\"?";
+    }
 
-<!--TinyMCE-->
-<script src="https://cdn.tiny.cloud/1/lcg796hp4bzkx6aefkdtwy7fwx0r6vx124a5b3jcq7269bsb/tinymce/5/tinymce.min.js"
-        referrerpolicy="origin"></script>
-<script>
-    tinymce.init({
-        selector: '#content',
-        plugins: 'lists advlist link image code media table',
-        height: '40vh',
-        toolbar: [
-            {
-                name: 'history', items: [ 'undo', 'redo' ]
-            },
-            {
-                name: 'styles', items: [ 'styleselect' ]
-            },
-            {
-                name: 'formatting', items: [ 'bold', 'italic']
-            },
-            {
-                name: 'alignment', items: [ 'alignleft', 'aligncenter', 'alignright', 'alignjustify' ]
-            },
-            {
-                name: 'indentation', items: [ 'outdent', 'indent' ]
-            },
-            {
-                name: 'lists', items: [ 'bullist', 'numlist' ]
-            },
-            {
-                name: 'insert', items: [ 'link', 'image', 'media', 'table']
-            }
-        ]
-    });
 </script>
 
 <!-- Menu Toggle Script -->
