@@ -398,6 +398,8 @@
 <script type="text/javascript">
 
     function readImageURL(input) {
+        document.getElementById("imageThumbnail").hidden = false;
+
         if (input.files && input.files[0]) {
             let reader = new FileReader();
 
@@ -413,7 +415,6 @@
     }
 
     function readPdfURL(input) {
-        document.getElementById("imageThumbnail").hidden = false;
 
         if (input.files && input.files[0]) {
             document.getElementById("pdfName").textContent = input.files[0].name;
