@@ -1,6 +1,7 @@
 package me.hizencode.mededu.courses;
 
-import me.hizencode.mededu.lessons.LessonEntity;
+import me.hizencode.mededu.course.test.CourseTestEntity;
+import me.hizencode.mededu.course.lesson.LessonEntity;
 import me.hizencode.mededu.specialities.SpecialityEntity;
 
 import javax.persistence.*;
@@ -48,6 +49,14 @@ public class CourseEntity {
             orphanRemoval = true
     )
     private List<LessonEntity> lessons;
+
+    @OneToMany(
+            mappedBy = "course",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    private List<CourseTestEntity> tests;
 
     public CourseEntity() {
     }
@@ -122,6 +131,14 @@ public class CourseEntity {
 
     public void setLessons(List<LessonEntity> lessons) {
         this.lessons = lessons;
+    }
+
+    public List<CourseTestEntity> getTests() {
+        return tests;
+    }
+
+    public void setTests(List<CourseTestEntity> tests) {
+        this.tests = tests;
     }
 
     @Override

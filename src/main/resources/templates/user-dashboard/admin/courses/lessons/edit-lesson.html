@@ -117,7 +117,7 @@
     <div class="container-fluid mt-5">
         <div class="card mb-5">
             <div class="card-body">
-                <form th:action="@{/user-dashboard/manage-courses/course/lessons/edit/save}" th:object="${lesson}"
+                <form th:action="@{/user-dashboard/manage-courses/course/lessons/lesson/edit/save}" th:object="${lesson}"
                       method="post">
                     <input type="hidden" th:field="*{id}">
                     <input type="hidden" th:field="*{courseId}">

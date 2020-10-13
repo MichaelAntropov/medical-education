@@ -1,5 +1,6 @@
-package me.hizencode.mededu.lessons;
+package me.hizencode.mededu.course.lesson;
 
+import me.hizencode.mededu.course.LearningItemProjection;
 import me.hizencode.mededu.courses.CourseEntity;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public interface LessonService {
 
     List<LessonEntity> findAllByCourseId(int courseId);
 
-    List<LessonIdTitleOrderNumberOnly> findAllByCourseIdOnlyIdAndTitleAndOrder(int courseId);
+    List<LearningItemProjection> findAllByCourseIdOnlyIdAndTitleAndOrder(int courseId);
 
     List<LessonEntity> findAllByCourseIdOrderByOrderNumber(int courseId);
 
@@ -30,5 +31,5 @@ public interface LessonService {
 
     void saveAll(List<LessonEntity> lessonEntities);
 
-    void deleteLessonAndSaveList(CourseEntity courseEntity, LessonEntity lessonEntity, List<LessonEntity> lessonEntities);
+    void deleteLesson(LessonEntity lessonEntity);
 }

@@ -1,14 +1,15 @@
-package me.hizencode.mededu.lessons;
+package me.hizencode.mededu.course.lesson;
 
+import me.hizencode.mededu.course.LearningItem;
+import me.hizencode.mededu.course.lesson.media.LessonMediaEntity;
 import me.hizencode.mededu.courses.CourseEntity;
-import me.hizencode.mededu.lessons.media.LessonMediaEntity;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(schema = "doctor_management", name = "lesson")
-public class LessonEntity {
+public class LessonEntity implements LearningItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

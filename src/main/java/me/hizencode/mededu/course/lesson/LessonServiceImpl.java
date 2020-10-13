@@ -1,5 +1,6 @@
-package me.hizencode.mededu.lessons;
+package me.hizencode.mededu.course.lesson;
 
+import me.hizencode.mededu.course.LearningItemProjection;
 import me.hizencode.mededu.courses.CourseEntity;
 import me.hizencode.mededu.courses.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class LessonServiceImpl implements LessonService{
+public class LessonServiceImpl implements LessonService {
 
     /*Fields*/
     /*================================================================================================================*/
@@ -43,8 +44,8 @@ public class LessonServiceImpl implements LessonService{
     }
 
     @Override
-    public List<LessonIdTitleOrderNumberOnly> findAllByCourseIdOnlyIdAndTitleAndOrder(int courseId) {
-        return lessonRepository.findAllByCourseIdOrderByOrderNumber(courseId, LessonIdTitleOrderNumberOnly.class);
+    public List<LearningItemProjection> findAllByCourseIdOnlyIdAndTitleAndOrder(int courseId) {
+        return lessonRepository.findAllByCourseIdOrderByOrderNumber(courseId, LearningItemProjection.class);
     }
 
     @Override
@@ -77,10 +78,7 @@ public class LessonServiceImpl implements LessonService{
     }
 
     @Override
-    @Transactional
-    public void deleteLessonAndSaveList(CourseEntity courseEntity, LessonEntity lessonEntity, List<LessonEntity> lessonEntities) {
-        courseService.saveCourse(courseEntity);
+    public void deleteLesson(LessonEntity lessonEntity) {
         lessonRepository.delete(lessonEntity);
-        saveAll(lessonEntities);
     }
 }

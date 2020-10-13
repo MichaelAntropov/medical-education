@@ -1,4 +1,4 @@
-package me.hizencode.mededu.lessons.media;
+package me.hizencode.mededu.course.lesson.media;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;

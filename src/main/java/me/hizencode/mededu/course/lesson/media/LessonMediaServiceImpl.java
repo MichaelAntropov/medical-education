@@ -1,4 +1,4 @@
-package me.hizencode.mededu.lessons.media;
+package me.hizencode.mededu.course.lesson.media;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

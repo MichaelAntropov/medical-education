@@ -1,6 +1,6 @@
-package me.hizencode.mededu.lessons.media;
+package me.hizencode.mededu.course.lesson.media;
 
-import me.hizencode.mededu.lessons.LessonEntity;
+import me.hizencode.mededu.course.lesson.LessonEntity;
 
 import javax.persistence.*;
 

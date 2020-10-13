@@ -1,4 +1,4 @@
-package me.hizencode.mededu.lessons.media;
+package me.hizencode.mededu.course.lesson.media;
 
 import java.util.List;
 import java.util.Optional;

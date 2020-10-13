@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       lang="en">
 <head>
-    <title>Course lesson</title>
+    <title>Course test</title>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -117,7 +117,7 @@
     <div class="container-fluid mt-5">
         <div class="card mb-5">
             <div class="card-body">
-                <form th:action="@{/user-dashboard/manage-courses/course/lessons/lesson/create/save}" th:object="${lesson}" method="post">
+                <form th:action="@{/user-dashboard/manage-courses/course/lessons/test/create/save}" th:object="${test}" method="post">
                     <input type="hidden" th:field="*{courseId}">
                     <!-- Title -->
                     <div class="row">
@@ -154,17 +154,17 @@
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="modalTitle">Create new lesson</h5>
+                                    <h5 class="modal-title" id="modalTitle">Create new test</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
                                 <div id="createModalBody" class="modal-body">
-                                    Create new lesson with name: ?
+                                    Create new test with name: ?
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Create lesson</button>
+                                    <button type="submit" class="btn btn-primary">Create test</button>
                                 </div>
                             </div>
                         </div>
@@ -188,7 +188,7 @@
 <script type="text/javascript">
     function setBody() {
         document.getElementById("createModalBody").textContent
-            = "Create new lesson with name: \"" +  document.getElementById("title").value + "\"?";
+            = "Create new test with name: \"" +  document.getElementById("title").value + "\"?";
     }
 
 </script>
