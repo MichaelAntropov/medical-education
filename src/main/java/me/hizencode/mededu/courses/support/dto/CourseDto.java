@@ -1,4 +1,4 @@
-package me.hizencode.mededu.courses.dto;
+package me.hizencode.mededu.courses.support.dto;
 
 import me.hizencode.mededu.specialities.SpecialityEntity;
 import org.springframework.format.annotation.DateTimeFormat;

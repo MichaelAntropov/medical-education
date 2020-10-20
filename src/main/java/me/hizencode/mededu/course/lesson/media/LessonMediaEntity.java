@@ -1,16 +1,18 @@
-package me.hizencode.mededu.image;
+package me.hizencode.mededu.course.lesson.media;
 
+import me.hizencode.mededu.course.lesson.LessonEntity;
 
 import javax.persistence.*;
-import java.util.Arrays;
 
 @Entity
-@Table(schema = "doctor_management", name = "image")
-public class ImageEntity {
-
+@Table(schema = "doctor_management", name = "lesson_media")
+public class LessonMediaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private LessonEntity lesson;
 
     @Column(name = "name")
     private String name;
@@ -18,11 +20,11 @@ public class ImageEntity {
     @Column(name = "type")
     private String type;
 
-    @Lob
+    @Lob @Basic(fetch = FetchType.LAZY)
     @Column(name = "data")
     private byte[] data;
 
-    public ImageEntity() {
+    public LessonMediaEntity() {
     }
 
     public int getId() {
@@ -57,13 +59,20 @@ public class ImageEntity {
         this.data = data;
     }
 
+    public LessonEntity getLesson() {
+        return lesson;
+    }
+
+    public void setLesson(LessonEntity lesson) {
+        this.lesson = lesson;
+    }
+
     @Override
     public String toString() {
         return "ImageEntity{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", type='" + type + '\'' +
-                ", data=" + Arrays.toString(data) +
                 '}';
     }
 }

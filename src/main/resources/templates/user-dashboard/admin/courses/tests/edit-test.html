@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <title>Course test</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="../../../../../static/css/bootstrap.css">
+    <link rel="stylesheet" href="../../../../../static/css/bootstrap-grid.css">
+
+    <link rel="stylesheet" href="../../../../../static/css/custom.css">
+    <!--===============================================================================================-->
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-primary">
+
+    <div class="container flex-row">
+        <div class="btn-lg text-light text-capitalize d-md-none" type="button" onclick="openNav()">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-menu-app" fill="currentColor"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M0 1.5A1.5 1.5 0 0 1 1.5 0h2A1.5 1.5 0 0 1 5 1.5v2A1.5 1.5 0 0 1 3.5 5h-2A1.5 1.5 0 0 1 0 3.5v-2zM1.5 1a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-2zM14 7H2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM2 6a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H2z"/>
+                <path fill-rule="evenodd"
+                      d="M15 11H1v-1h14v1zM2 12.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+        </div>
+
+        <a class="navbar-brand" th:href="@{/}">
+            <img src="../../../../../static/img/logo.png" alt="Logo" style="width:40px">
+            Hizencode
+        </a>
+
+        <button class="navbar-toggler collapsed" type="button"
+                data-toggle="collapse" data-target="#navbarsExample05"
+                aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="navbar-collapse collapse " id="navbarsExample05" style="">
+            <ul class="navbar-nav ml-auto main-menu-nav
+					 d-flex justify-content-center align-items-center">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Project<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Courses<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Contacts<span class="sr-only">(current)</span></a>
+                </li>
+
+                <div class="d-none d-md-block pr-4"></div>
+
+                <div class="d-none d-md-block pr-4 border-left border-light" style="height: 30px"></div>
+
+                <div class="d-sm-block d-md-none border-bottom border-light" style="width: 90%"></div>
+
+                <!-- Shown only to authorized users-->
+                <li sec:authorize="isAuthenticated()" class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" th:href="@{/templates/user-dashboard}"
+                       th:text="${#authentication.getPrincipal().getEmail()}">Name
+                    </a>
+                    <div class="dropdown-menu">
+                        <form th:action="@{/logout}" method="post">
+                            <input class="dropdown-item" type="submit" value="Log out">
+                        </form>
+                    </div>
+                </li>
+
+                <!-- Shown only to visitors -->
+                <li sec:authorize="!isAuthenticated()" class="nav-item active ">
+                    <a class="nav-link" th:href="@{/templates/login}">Sign in<span class="sr-only">(current)</span></a>
+                </li>
+
+                <li sec:authorize="!isAuthenticated()" class="nav-item active">
+                    <a class="nav-link" th:href="@{/templates/registration}">Sign up<span
+                            class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+<div class="d-flex">
+
+    <!-- Sidebar -->
+    <div class="sidebar-wrapper bg-light border-right d-none d-md-block">
+        <div class="list-group list-group-flush">
+            <a href="#" class="list-group-item list-group-item-action bg-light">My profile</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">My courses</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">My certificates</a>
+            <a sec:authorize="hasRole('ADMIN')" href="/user-dashboard/manage-courses"
+               class="list-group-item list-group-item-action bg-light">Manage courses</a>
+        </div>
+    </div>
+
+    <!-- Sidebar for mobile -->
+    <div id="sidenav" class="sidenav bg-light border-right d-md-none">
+        <a href="#" class="btn-close" onclick="closeNav()">&times;</a>
+        <div class="list-group list-group-flush">
+            <a href="#" class="list-group-item list-group-item-action bg-light">My profile</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">My courses</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">My certificates</a>
+            <a sec:authorize="hasRole('ADMIN')" href="/user-dashboard/manage-courses"
+               class="list-group-item list-group-item-action bg-light">Manage courses</a>
+        </div>
+    </div>
+
+    <!-- Dark Overlay element -->
+    <div id="sidenav-overlay" class="sidenav-overlay  d-md-none"></div>
+
+    <!-- Page Content -->
+    <div class="container-fluid mt-5">
+        <div class="card mb-5">
+            <div class="card-body">
+                <form th:action="@{/user-dashboard/manage-courses/course/lessons/test/edit/save}" th:object="${test}"
+                      method="post">
+                    <input type="hidden" name="_csrf_header" th:value="${_csrf.headerName}"/>
+                    <input type="hidden" th:field="*{id}">
+                    <input type="hidden" th:field="*{courseId}">
+                    <!-- Title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="text">Title</h6>
+                        </div>
+                    </div>
+                    <div class="row  mb-3">
+                        <div class="col-12">
+                            <input class="form-control form-control-lg" type="text" placeholder="Enter title"
+                                   aria-label="Title"
+                                   th:field="*{title}">
+                        </div>
+                    </div>
+                    <!-- Content -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="text">Content</h6>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <textarea id="content" name="content" aria-label="Lesson content"
+                                      placeholder="Enter additional content of the test"
+                                      th:field="*{content}"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Info alerts -->
+                    <div id="mainInfoAlertsElement">
+                    </div>
+
+                    <!-- Questions -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="text">Questions</h6>
+                        </div>
+                    </div>
+                    <!-- Questions card -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div id="questionList">
+                                <div class="card card-body mb-2">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            Some text from question
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <button type="button" class="btn btn-danger float-right m-1" data-toggle="modal" data-target="#deleteModal">
+                                                    Delete
+                                                </button>
+                                                <button type="button" class="btn btn-primary float-right m-1">
+                                                    Edit
+                                                </button>
+                                                <button type="button" class="btn btn-light btn-outline-info float-right m-1">
+                                                    &#9660;
+                                                </button>
+                                                <button type="button" class="btn btn-light btn-outline-info float-right m-1">
+                                                    &#9650;
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add new content -->
+                    <div class="row mb-3 mt-3">
+                        <div class="col-12">
+                            <button class="btn btn-info" type="button" style="width: 150px"
+                                    onclick="showCreateQuestion()">
+                                Add question
+                            </button>
+                            <button class="btn btn-info" type="button" style="width: 150px"
+                                    onclick="logArray()">
+                                Log array
+                            </button>
+                            <button class="btn btn-info" type="button" style="width: 150px"
+                                    onclick="logTestData()">
+                                Log test data
+                            </button>
+                            <button class="btn btn-info" type="button" style="width: 150px"
+                                    onclick="postTestData()">
+                                Save questions
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Content -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="text">Media</h6>
+                        </div>
+                    </div>
+
+                    <div id="mainMediaList">
+                        <div class="card pt-3 mt-3">
+                            <div class="row mb-3">
+                                <div class="col ml-2">
+                                    <img id="mediaImage" src="../../../../../static/img/background.jpg"
+                                         alt="Image not found"
+                                         class="img-thumbnail mr-2"
+                                         style="height: 100px"/>
+                                    <p>Name of the image</p>
+                                    <button class="btn btn-sm btn-outline-info mr-1 mt-1" type="button">
+                                        Copy link to clipboard
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger mr-1 mt-1" type="button"
+                                            onclick="openDeleteMediaModal(0)">
+                                        <i class="fas fa-trash-alt" style="font-size: 1rem"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add new content -->
+                    <div class="row mb-3 mt-3">
+                        <div class="col-12">
+                            <button class="btn btn-info" type="button" style="width: 150px"
+                                    data-toggle="modal" data-target="#uploadImageModal">
+                                Add image
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Save button -->
+                    <div class="row mb-3">
+                        <div class="col">
+                            <hr>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <button class="btn btn-primary" style="width: 100px" type="submit">
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question modal -->
+    <div class="modal bd-modal-xl fade" id="questionModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
+         aria-labelledby="questionModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="questionModalTitle">Create/Edit question</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                            <textarea id="questionModalContent" aria-label="Content"
+                                      placeholder="Enter a question"></textarea>
+                            </div>
+                        </div>
+                        <h6>Answers:</h6>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="card card-body"
+                                     id="questionModalAnswerList">
+                                    <div class="card card-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                Some text from answer
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <button type="button" class="btn btn-danger float-right m-1" data-toggle="modal" data-target="#deleteModal">
+                                                        Delete
+                                                    </button>
+                                                    <button type="button" class="btn btn-primary float-right m-1">
+                                                        Edit
+                                                    </button>
+                                                    <button type="button" class="btn btn-light btn-outline-info float-right m-1">
+                                                        &#9660;
+                                                    </button>
+                                                    <button type="button" class="btn btn-light btn-outline-info float-right m-1">
+                                                        &#9650;
+                                                    </button>
+                                                    <div class="custom-control custom-radio float-right m-1 mt-2">
+                                                        <input class="custom-control-input" type="radio" checked="checked"
+                                                               id="answerRadioButton" name="answer">
+                                                        <label class="custom-control-label" for="answerRadioButton">
+                                                            Correct
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <button class="btn btn-info" type="button"
+                                        onclick="questionModalAnswerButton()">
+                                    Add answer
+                                </button>
+                            </div>
+                        </div>
+
+                        <h6>Media list:</h6>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="collapse" id="questionModalMediaCollapse">
+                                    <div class="card card-body overflow-auto" style="max-height: 300px"
+                                         id="questionModalMediaList">
+                                        <div class="card pt-3 mt-3">
+                                            <div class="row mb-3">
+                                                <div class="col ml-2">
+                                                    <img src="../../../../../static/img/background.jpg"
+                                                         alt="Image not found"
+                                                         class="img-thumbnail mr-2"
+                                                         style="height: 100px"/>
+                                                    <p>Name of the image</p>
+                                                    <button class="btn btn-sm btn-outline-info mr-1 mt-1"
+                                                            type="button">
+                                                        Copy link to clipboard
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger mr-1 mt-1"
+                                                            type="button"
+                                                            onclick="openDeleteMediaModal(0)">
+                                                        <i class="fas fa-trash-alt"
+                                                           style="font-size: 1rem"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <button id="questionModalMediaButton" class="btn btn-primary" type="button"
+                                        onclick="questionModalMediaButton()">
+                                    Show media
+                                </button>
+                                <button class="btn btn-primary" type="button"
+                                        data-target="#uploadImageModal" data-toggle="modal">
+                                    Add media
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                            id="questionModalCloseButton">
+                        Close
+                    </button>
+                    <button id="questionModalActionButton" type="button" class="btn btn-primary">
+                        Create/Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Answer modal -->
+    <div class="modal bd-modal-xl fade" id="answerModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
+         aria-labelledby="answerModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="answerModalTitle">Add/Edit answer</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                            <textarea id="answerModalContent" aria-label="Content"
+                                      placeholder="Enter an answer"></textarea>
+                            </div>
+                        </div>
+                        <h6>Media list:</h6>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="collapse" id="answerModalMediaCollapse">
+                                    <div class="card card-body overflow-auto" style="max-height: 300px"
+                                         id="answerModalMediaList">
+                                        <div class="card pt-3 mt-3">
+                                            <div class="row mb-3">
+                                                <div class="col ml-2">
+                                                    <img src="../../../../../static/img/background.jpg"
+                                                         alt="Image not found"
+                                                         class="img-thumbnail mr-2"
+                                                         style="height: 100px"/>
+                                                    <p>Name of the image</p>
+                                                    <button class="btn btn-sm btn-outline-info mr-1 mt-1"
+                                                            type="button">
+                                                        Copy link to clipboard
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger mr-1 mt-1"
+                                                            type="button"
+                                                            onclick="openDeleteMediaModal(0)">
+                                                        <i class="fas fa-trash-alt"
+                                                           style="font-size: 1rem"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <button id="answerModalMediaButton" class="btn btn-primary" type="button"
+                                        onclick="answerModalMediaButton()">
+                                    Show media
+                                </button>
+                                <button class="btn btn-primary" type="button"
+                                        data-target="#uploadImageModal" data-toggle="modal">
+                                    Add media
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                            id="answerModalCloseButton">
+                        Close
+                    </button>
+                    <button id="answerModalActionButton" type="button" class="btn btn-primary">
+                        Add/Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Image Modal -->
+    <div class="modal fade" id="uploadImageModal" tabindex="-1" role="dialog"
+         aria-labelledby="modalImageTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalImageTitle">Upload image</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <img class="img-thumbnail" id="imageThumbnail" hidden="hidden" src="#"
+                                 alt="Image Thumbnail"
+                                 style="height: 200px"/>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="custom-file">
+                                <input id="image" name="image" type="file" class="custom-file-input"
+                                       onchange="readImage(this);">
+                                <label id="imageName" class="custom-file-label">Choose image...</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"
+                            onclick="uploadImage()">
+                        Upload
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Image Modal -->
+    <div class="modal fade" id="deleteMediaModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete media</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="deleteMediaModalText" class="modal-body">
+                    Are you sure you want to delete this media?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"
+                            onclick="deleteImage()">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="deleteModalTitle" class="modal-title">Delete question/answer</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="deleteModalText" class="modal-body">
+                    Are you sure you want to delete this question/answer?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Close
+                    </button>
+                    <button id="deleteModalActionButton" type="button" class="btn btn-danger" data-dismiss="modal">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Warning Modal -->
+    <div class="modal fade" id="warningModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="warningModalTitle" class="modal-title">Warning</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="warningModalText" class="modal-body">
+                    Are you sure you want to quit creating/editing this question/answer?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Back
+                    </button>
+                    <button id="warningModalCloseButton" type="button" class="btn btn-primary" data-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/27c4e55744.js" crossorigin="anonymous"></script>
+
+<!--TinyMCE-->
+<script src="https://cdn.tiny.cloud/1/lcg796hp4bzkx6aefkdtwy7fwx0r6vx124a5b3jcq7269bsb/tinymce/5/tinymce.min.js"
+        referrerpolicy="origin"></script>
+
+<script src="../../../../../static/js/edit-test.js"></script>
+
+<script>
+    tinymce.init({
+        selector: '#content,#questionModalContent,#answerModalContent',
+        plugins: 'lists advlist link image code media table',
+        height: '40vh',
+        toolbar: [
+            {
+                name: 'history', items: ['undo', 'redo']
+            },
+            {
+                name: 'styles', items: ['styleselect']
+            },
+            {
+                name: 'formatting', items: ['bold', 'italic']
+            },
+            {
+                name: 'alignment', items: ['alignleft', 'aligncenter', 'alignright', 'alignjustify']
+            },
+            {
+                name: 'indentation', items: ['outdent', 'indent']
+            },
+            {
+                name: 'lists', items: ['bullist', 'numlist']
+            },
+            {
+                name: 'insert', items: ['link', 'image', 'media', 'table']
+            }
+        ]
+    });
+
+    // Prevent Bootstrap dialog from blocking focusin
+    $(document).on('focusin', function(e) {
+        if ($(e.target).closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root").length) {
+            e.stopImmediatePropagation();
+        }
+    });
+</script>
+
+<!-- Menu Toggle Script -->
+<script type="text/javascript">
+
+    function openNav() {
+        document.getElementById("sidenav").style.visibility = "visible";
+        document.getElementById("sidenav").style.width = "250px";
+
+        document.getElementById("sidenav-overlay").style.display = "block";
+    }
+
+    /* Set the width of the side navigation to 0 */
+    function closeNav() {
+        document.getElementById("sidenav").style.width = "0px";
+        document.getElementById("sidenav").style.visibility = "hidden";
+
+        document.getElementById("sidenav-overlay").style.display = "none";
+    }
+</script>
+
+</body>
+</html>

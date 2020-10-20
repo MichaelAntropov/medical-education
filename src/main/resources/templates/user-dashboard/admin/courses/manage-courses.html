@@ -8,12 +8,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" href="../../../static/css/bootstrap.css">
-    <link rel="stylesheet" href="../../../static/css/bootstrap-grid.css">
+    <link rel="stylesheet" href="../../../../static/css/bootstrap.css">
+    <link rel="stylesheet" href="../../../../static/css/bootstrap-grid.css">
 
-    <link rel="stylesheet" href="../../../static/css/custom.css">
+    <link rel="stylesheet" href="../../../../static/css/custom.css">
 
-    <link rel="stylesheet" href="../../../static/css/intlTelInput.css">
+    <link rel="stylesheet" href="../../../../static/css/intlTelInput.css">
     <!--===============================================================================================-->
 </head>
 <body>
@@ -31,7 +31,7 @@
         </div>
 
         <a class="navbar-brand" th:href="@{/}">
-            <img src="../../../static/img/logo.png" alt="Logo" style="width:40px">
+            <img src="../../../../static/img/logo.png" alt="Logo" style="width:40px">
             Hizencode
         </a>
 
@@ -176,23 +176,30 @@
                         </div>
                     </div>
                     <!-- Courses in pages -->
-                    <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
-                        <div class="card d-flex m-3" style="max-width: 18rem;"
+                    <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-2 row-cols-xl-4">
+                        <!-- Course card -->
+                        <div class="card border-0"
                              th:each="course : ${coursesPage.getContent()}">
-                            <img class="card-img-top course-thumbnail" alt="Course image" src="#"
-                                 th:if="${course.getCourseDetails().getImage()} != null"
-                                 th:src="@{'/course/image/' + ${course.getCourseDetails().getImage().getId()}}">
-                            <div class="card-body">
-                                <h5 class="card-title text-truncate" th:text="${course.getName()}">Course title</h5>
-                                <p class="card-text overflow" th:text="${course.getCourseDescription().getText()}">
-                                    Some quick example text of course and make up the bulk of the card's content.
-                                    Very huge chunk of text to test custom overflow.
-                                </p>
+                            <div class="card m-3">
+                                <img class="card-img-top course-thumbnail" alt="Course image" src="#"
+                                     th:if="${course.getCourseDetails().getImage()} != null"
+                                     th:src="@{'/course/image/' + ${course.getCourseDetails().getImage().getId()}}">
+                                <div class="card-body">
+                                    <h5 class="card-title text-truncate" th:text="${course.getName()}">Course title</h5>
+                                    <div class="card-text overflow">
+                                        <div class="card-text overflow">
+                                            <div th:utext="${course.getCourseDescription().getText()}">
+                                                Some quick example text of course and make up the bulk of the card's content.
+                                                Very huge chunk of text to test custom overflow.
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                <a class="btn btn-primary"
-                                   th:href="@{/user-dashboard/manage-courses/edit/course{courseId}(courseId = ${course.getId()})}">
-                                    Edit
-                                </a>
+                                    <a class="btn btn-primary"
+                                       th:href="@{/user-dashboard/manage-courses/edit/course{courseId}(courseId = ${course.getId()})}">
+                                        Edit
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -242,7 +249,7 @@
         integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
         crossorigin="anonymous"></script>
 
-<!-- Menu Toggle Script -->
+<!-- Menu Toggle Script And Search Request -->
 <script type="text/javascript">
 
     function openNav() {

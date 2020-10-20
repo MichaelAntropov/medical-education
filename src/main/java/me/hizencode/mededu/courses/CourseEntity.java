@@ -1,5 +1,7 @@
 package me.hizencode.mededu.courses;
 
+import me.hizencode.mededu.course.test.CourseTestEntity;
+import me.hizencode.mededu.course.lesson.LessonEntity;
 import me.hizencode.mededu.specialities.SpecialityEntity;
 
 import javax.persistence.*;
@@ -25,6 +27,9 @@ public class CourseEntity {
     @JoinColumn(name = "course_description_id", referencedColumnName = "id")
     private CourseDescriptionEntity courseDescription;
 
+    @Column(name = "lesson_count")
+    private int lessonCount;
+
     @Column(name = "creation_date")
     private Date creationDate;
 
@@ -36,6 +41,22 @@ public class CourseEntity {
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "speciality_id"))
     private List<SpecialityEntity> specialities;
+
+    @OneToMany(
+            mappedBy = "course",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    private List<LessonEntity> lessons;
+
+    @OneToMany(
+            mappedBy = "course",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    private List<CourseTestEntity> tests;
 
     public CourseEntity() {
     }
@@ -54,6 +75,14 @@ public class CourseEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getLessonCount() {
+        return lessonCount;
+    }
+
+    public void setLessonCount(int lessonCount) {
+        this.lessonCount = lessonCount;
     }
 
     public Date getEditDate() {
@@ -94,6 +123,22 @@ public class CourseEntity {
 
     public void setSpecialities(List<SpecialityEntity> specialities) {
         this.specialities = specialities;
+    }
+
+    public List<LessonEntity> getLessons() {
+        return lessons;
+    }
+
+    public void setLessons(List<LessonEntity> lessons) {
+        this.lessons = lessons;
+    }
+
+    public List<CourseTestEntity> getTests() {
+        return tests;
+    }
+
+    public void setTests(List<CourseTestEntity> tests) {
+        this.tests = tests;
     }
 
     @Override
