@@ -1,6 +1,7 @@
 package me.hizencode.mededu.course.test;
 
 import me.hizencode.mededu.course.LearningItem;
+import me.hizencode.mededu.course.test.media.CourseTestMediaEntity;
 import me.hizencode.mededu.courses.CourseEntity;
 
 import javax.persistence.*;
@@ -16,6 +17,14 @@ public class CourseTestEntity implements LearningItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private CourseEntity course;
+
+    @OneToMany(
+            mappedBy = "test",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    private List<CourseTestMediaEntity> media;
 
     @Column(name = "order_number")
     private int orderNumber;
@@ -51,6 +60,14 @@ public class CourseTestEntity implements LearningItem {
 
     public void setCourse(CourseEntity course) {
         this.course = course;
+    }
+
+    public List<CourseTestMediaEntity> getMedia() {
+        return media;
+    }
+
+    public void setMedia(List<CourseTestMediaEntity> media) {
+        this.media = media;
     }
 
     public Integer getOrderNumber() {

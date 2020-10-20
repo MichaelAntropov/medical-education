@@ -23,4 +23,7 @@ public interface CourseTestService {
     void saveAll(List<CourseTestEntity> courseTestEntities);
 
     void deleteCourseTest(CourseTestEntity courseTestEntity);
+
+    void saveQuestions(List<CourseQuestionEntity> courseQuestionEntities,
+                       List<Integer> questionsToDelete, List<Integer> answersToDelete);
 }

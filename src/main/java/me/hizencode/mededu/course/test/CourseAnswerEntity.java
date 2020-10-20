@@ -11,7 +11,7 @@ public class CourseAnswerEntity {
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private CourseTestEntity question;
+    private CourseQuestionEntity question;
 
     @Column(name = "order_number")
     private int orderNumber;
@@ -30,11 +30,11 @@ public class CourseAnswerEntity {
         this.id = id;
     }
 
-    public CourseTestEntity getQuestion() {
+    public CourseQuestionEntity getQuestion() {
         return question;
     }
 
-    public void setQuestion(CourseTestEntity question) {
+    public void setQuestion(CourseQuestionEntity question) {
         this.question = question;
     }
 

@@ -17,6 +17,9 @@ public class CourseQuestionEntity {
     @Column(name = "order_number")
     private int orderNumber;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private CourseAnswerEntity correctAnswer;
+
     @Column(name = "content")
     private String content;
 
@@ -55,6 +58,14 @@ public class CourseQuestionEntity {
         this.orderNumber = orderNumber;
     }
 
+    public CourseAnswerEntity getCorrectAnswer() {
+        return correctAnswer;
+    }
+
+    public void setCorrectAnswer(CourseAnswerEntity correctAnswer) {
+        this.correctAnswer = correctAnswer;
+    }
+
     public String getContent() {
         return content;
     }
@@ -75,7 +86,9 @@ public class CourseQuestionEntity {
     public String toString() {
         return "CourseQuestionEntity{" +
                 "id=" + id +
+                ", test=" + test +
                 ", orderNumber=" + orderNumber +
+                ", correctAnswer=" + correctAnswer +
                 ", content='" + content + '\'' +
                 '}';
     }

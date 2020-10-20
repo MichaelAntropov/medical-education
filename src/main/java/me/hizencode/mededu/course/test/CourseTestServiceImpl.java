@@ -17,6 +17,10 @@ public class CourseTestServiceImpl implements CourseTestService {
     /*================================================================================================================*/
     private CourseTestRepository courseTestRepository;
 
+    private CourseQuestionRepository courseQuestionRepository;
+
+    private CourseAnswerRepository courseAnswerRepository;
+
     private CourseService courseService;
 
     /*Setters*/
@@ -24,6 +28,16 @@ public class CourseTestServiceImpl implements CourseTestService {
     @Autowired
     public void setCourseTestRepository(CourseTestRepository courseTestRepository) {
         this.courseTestRepository = courseTestRepository;
+    }
+
+    @Autowired
+    public void setCourseQuestionRepository(CourseQuestionRepository courseQuestionRepository) {
+        this.courseQuestionRepository = courseQuestionRepository;
+    }
+
+    @Autowired
+    public void setCourseAnswerRepository(CourseAnswerRepository courseAnswerRepository) {
+        this.courseAnswerRepository = courseAnswerRepository;
     }
 
     @Autowired
@@ -70,6 +84,40 @@ public class CourseTestServiceImpl implements CourseTestService {
     @Override
     public void saveAll(List<CourseTestEntity> courseTestEntities) {
         courseTestRepository.saveAll(courseTestEntities);
+    }
+
+    @Override
+    @Transactional
+    public void saveQuestions(List<CourseQuestionEntity> courseQuestionEntities, List<Integer> questionsToDelete, List<Integer> answersToDelete) {
+        List<CourseQuestionEntity> questionEntities = courseQuestionRepository.findAllById(questionsToDelete);
+        List<CourseAnswerEntity> courseAnswerEntities = courseAnswerRepository.findAllById(answersToDelete);
+
+        courseQuestionRepository.deleteAll(questionEntities);
+        courseAnswerRepository.deleteAll(courseAnswerEntities);
+
+        saveAllQuestions(courseQuestionEntities);
+    }
+
+    @Transactional
+    public void saveAllQuestions(List<CourseQuestionEntity> courseQuestionEntities) {
+
+        courseQuestionEntities.forEach(courseQuestionEntity -> {
+            CourseAnswerEntity correctAnswer = courseQuestionEntity.getCorrectAnswer();
+            courseQuestionEntity.getAnswers().remove(correctAnswer);
+            courseQuestionEntity.setCorrectAnswer(null);
+
+            CourseQuestionEntity savedQuestion = courseQuestionRepository.save(courseQuestionEntity);
+
+            courseQuestionEntity.getAnswers().forEach(courseAnswerEntity -> {
+                courseAnswerEntity.setQuestion(savedQuestion);
+            });
+            courseAnswerRepository.saveAll(courseQuestionEntity.getAnswers());
+
+            correctAnswer.setQuestion(savedQuestion);
+            CourseAnswerEntity savedAnswer = courseAnswerRepository.save(correctAnswer);
+            savedQuestion.setCorrectAnswer(savedAnswer);
+            courseQuestionRepository.save(savedQuestion);
+        });
     }
 
     @Override
