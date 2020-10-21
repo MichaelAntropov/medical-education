@@ -21,7 +21,8 @@ public class CourseTestMediaEntity {
     @Column(name = "type")
     private String type;
 
-    @Lob @Basic(fetch = FetchType.LAZY)
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "data")
     private byte[] data;
 

@@ -21,9 +21,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class DashboardAdminTestController {
@@ -213,7 +214,7 @@ public class DashboardAdminTestController {
     @ResponseBody
     @PostMapping("/user-dashboard/manage-courses/course/lessons/test/image/upload")
     public MediaResponseJson testUploadImage(@RequestParam Integer testId,
-                                       @RequestParam("image") MultipartFile image) {
+                                             @RequestParam("image") MultipartFile image) {
 
         Optional<CourseTestEntity> testEntity = testService.findById(testId);
 
@@ -252,7 +253,7 @@ public class DashboardAdminTestController {
 
         Optional<CourseTestMediaEntity> mediaEntity = testMediaService.findById(imageId);
 
-        if(mediaEntity.isEmpty()) {
+        if (mediaEntity.isEmpty()) {
             return new MediaResponseJson("Could not delete image. Incorrect data.");
         }
 
@@ -309,7 +310,7 @@ public class DashboardAdminTestController {
                 courseQuestionEntity.getAnswers()
                         .removeIf(courseAnswerEntity ->
                                 testData.getAnswersToDelete().contains(courseAnswerEntity.getId())
-        ));
+                        ));
 
         updateCourseQuestionList(testEntity.get(), courseQuestionEntities, testData.getQuestions());
 
@@ -322,15 +323,15 @@ public class DashboardAdminTestController {
                                           List<CourseQuestionEntity> courseQuestionEntities,
                                           List<QuestionJson> questionJsonList) {
         questionJsonList.forEach(questionJson -> {
-            if(questionJson.getAnswers().size() < 1) {
-                throw  new IllegalStateException("Invalid data. Question should have at least one answer.");
+            if (questionJson.getAnswers().size() < 1) {
+                throw new IllegalStateException("Invalid data. Question should have at least one answer.");
             }
-            if(questionJson.getId() != null) {
-                Optional<CourseQuestionEntity> questionEntityOptional =  courseQuestionEntities.stream()
+            if (questionJson.getId() != null) {
+                Optional<CourseQuestionEntity> questionEntityOptional = courseQuestionEntities.stream()
                         .filter(courseQuestionEntity -> courseQuestionEntity.getId() == questionJson.getId())
                         .findFirst();
 
-                if(questionEntityOptional.isPresent()) {
+                if (questionEntityOptional.isPresent()) {
                     CourseQuestionEntity questionEntity = questionEntityOptional.get();
                     questionEntity.setOrderNumber(questionJson.getOrderNumber());
                     questionEntity.setContent(questionJson.getContent());
@@ -340,7 +341,7 @@ public class DashboardAdminTestController {
                 }
             }
 
-            if(questionJson.getId() == null) {
+            if (questionJson.getId() == null) {
                 CourseQuestionEntity questionEntity = new CourseQuestionEntity();
                 questionEntity.setTest(courseTestEntity);
                 questionEntity.setAnswers(new ArrayList<>());
@@ -361,35 +362,35 @@ public class DashboardAdminTestController {
 
         answerJsonList.forEach(answerJson -> {
             //If exists - modify
-            if(answerJson.getId() != null) {
+            if (answerJson.getId() != null) {
                 Optional<CourseAnswerEntity> answerEntityOptional = courseAnswerEntities.stream()
-                        .filter(courseAnswerEntity ->  courseAnswerEntity.getId() == answerJson.getId())
+                        .filter(courseAnswerEntity -> courseAnswerEntity.getId() == answerJson.getId())
                         .findFirst();
 
-                if(answerEntityOptional.isPresent()) {
+                if (answerEntityOptional.isPresent()) {
                     CourseAnswerEntity courseAnswerEntity = answerEntityOptional.get();
                     courseAnswerEntity.setOrderNumber(answerJson.getOrderNumber());
                     courseAnswerEntity.setContent(answerJson.getContent());
                     courseAnswerEntity.setQuestion(courseQuestionEntity);
-                    if(answerJson.isCorrect()) {
+                    if (answerJson.isCorrect()) {
                         correctAnswer[0] = courseAnswerEntity;
                     }
                 }
             }
             //If not - add new
-            if(answerJson.getId() == null) {
+            if (answerJson.getId() == null) {
                 CourseAnswerEntity courseAnswerEntity = new CourseAnswerEntity();
                 courseAnswerEntity.setQuestion(courseQuestionEntity);
                 courseAnswerEntity.setOrderNumber(answerJson.getOrderNumber());
                 courseAnswerEntity.setContent(answerJson.getContent());
-                if(answerJson.isCorrect()) {
+                if (answerJson.isCorrect()) {
                     correctAnswer[0] = courseAnswerEntity;
                 }
                 courseAnswerEntities.add(courseAnswerEntity);
             }
         });
 
-        if(correctAnswer[0] == null) {
+        if (correctAnswer[0] == null) {
             throw new IllegalStateException("Invalid data. At least one answer should be a correct one.");
         }
 
@@ -412,7 +413,7 @@ public class DashboardAdminTestController {
         List<AnswerJson> answerJsonList = new ArrayList<>();
         answerEntities.forEach(courseAnswerEntity -> {
             AnswerJson answerJson = answerEntityToJson(courseAnswerEntity, questionEntity.getId());
-            if(answerJson.getId() == correctAnswer) {
+            if (answerJson.getId() == correctAnswer) {
                 answerJson.setCorrect(true);
             }
             answerJsonList.add(answerJson);

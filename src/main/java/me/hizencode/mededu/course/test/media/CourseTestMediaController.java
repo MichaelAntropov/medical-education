@@ -29,7 +29,7 @@ public class CourseTestMediaController {
     /*================================================================================================================*/
     @GetMapping("/course/test/media/image{imageId}")
     public void showTestImage(@PathVariable Integer imageId,
-                                HttpServletResponse response) {
+                              HttpServletResponse response) {
 
         //TODO: Add authentication logic
 
