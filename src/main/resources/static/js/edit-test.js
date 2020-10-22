@@ -915,16 +915,3 @@ function htmlToElement(html) {
 function getRandomInt(min, max) {
     return Math.random() * (max - min) + min;
 }
-
-function logTestData() {
-    testData.questions = testQuestions;
-    console.log(testData);
-}
-
-function logArray() {
-    console.log(testQuestions);
-}
-function postData() {
-    postTestData();
-}
-//TODO: Dont save question with less than one answer or correct answer
