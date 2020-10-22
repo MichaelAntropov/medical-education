@@ -438,6 +438,11 @@ function showCreateQuestion() {
 
 function saveCreatedQuestion() {
     let question = testQuestion[0];
+
+    if(!checkQuestion(question)) {
+        return;
+    }
+
     question.orderNumber = testQuestions.length + 1;
     question.content = getQuestionContent();
     question.edited = true;
@@ -460,6 +465,11 @@ function showEditQuestion(questionOrderNumber) {
 
 function saveEditedQuestion() {
     let questionEdited = testQuestion[0];
+
+    if(!checkQuestion(questionEdited)) {
+        return;
+    }
+
     questionEdited.content = getQuestionContent();
     //Save to main list
     testQuestions[questionEdited.orderNumber - 1] = questionEdited;
@@ -507,6 +517,20 @@ function moveQuestionDown(orderNumber) {
     redrawQuestions();
 }
 
+function checkQuestion(question) {
+    if(question.answers.length < 1) {
+        showGeneralWarning("Question must have at least one answer and one correct answer.")
+        return false;
+    }
+    question.answers.forEach(answer => {
+        if(answer.correct) {
+            return true;
+        }
+    });
+    showGeneralWarning("Question must have at least one correct answer.")
+    return false;
+}
+
 function showDeleteQuestionModal(orderNumber) {
     document.getElementById("deleteModalTitle")
         .innerText = "Delete question";
@@ -520,6 +544,11 @@ function showDeleteQuestionModal(orderNumber) {
 function closeQuestionWarning() {
     $("#warningModal").modal('hide');
     $("#questionModal").modal('hide');
+}
+
+function showGeneralWarning(text) {
+    $("#warningModalGeneral").modal();
+    document.getElementById("warningModalGeneralText").innerText = text;
 }
 
 ////////////////

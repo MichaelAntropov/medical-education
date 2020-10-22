@@ -170,16 +170,19 @@
                                         </div>
                                         <div class="row">
                                             <div class="col">
-                                                <button type="button" class="btn btn-danger float-right m-1" data-toggle="modal" data-target="#deleteModal">
+                                                <button type="button" class="btn btn-danger float-right m-1"
+                                                        data-toggle="modal" data-target="#deleteModal">
                                                     Delete
                                                 </button>
                                                 <button type="button" class="btn btn-primary float-right m-1">
                                                     Edit
                                                 </button>
-                                                <button type="button" class="btn btn-light btn-outline-info float-right m-1">
+                                                <button type="button"
+                                                        class="btn btn-light btn-outline-info float-right m-1">
                                                     &#9660;
                                                 </button>
-                                                <button type="button" class="btn btn-light btn-outline-info float-right m-1">
+                                                <button type="button"
+                                                        class="btn btn-light btn-outline-info float-right m-1">
                                                     &#9650;
                                                 </button>
                                             </div>
@@ -268,7 +271,8 @@
     </div>
 
     <!-- Question modal -->
-    <div class="modal bd-modal-xl fade" id="questionModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
+    <div class="modal bd-modal-xl fade" id="questionModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+         role="dialog"
          aria-labelledby="questionModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog modal-xl" role="document">
             <div class="modal-content">
@@ -295,20 +299,24 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col">
-                                                    <button type="button" class="btn btn-danger float-right m-1" data-toggle="modal" data-target="#deleteModal">
+                                                    <button type="button" class="btn btn-danger float-right m-1"
+                                                            data-toggle="modal" data-target="#deleteModal">
                                                         Delete
                                                     </button>
                                                     <button type="button" class="btn btn-primary float-right m-1">
                                                         Edit
                                                     </button>
-                                                    <button type="button" class="btn btn-light btn-outline-info float-right m-1">
+                                                    <button type="button"
+                                                            class="btn btn-light btn-outline-info float-right m-1">
                                                         &#9660;
                                                     </button>
-                                                    <button type="button" class="btn btn-light btn-outline-info float-right m-1">
+                                                    <button type="button"
+                                                            class="btn btn-light btn-outline-info float-right m-1">
                                                         &#9650;
                                                     </button>
                                                     <div class="custom-control custom-radio float-right m-1 mt-2">
-                                                        <input class="custom-control-input" type="radio" checked="checked"
+                                                        <input class="custom-control-input" type="radio"
+                                                               checked="checked"
                                                                id="answerRadioButton" name="answer">
                                                         <label class="custom-control-label" for="answerRadioButton">
                                                             Correct
@@ -389,7 +397,8 @@
     </div>
 
     <!-- Answer modal -->
-    <div class="modal bd-modal-xl fade" id="answerModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
+    <div class="modal bd-modal-xl fade" id="answerModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+         role="dialog"
          aria-labelledby="answerModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog modal-xl" role="document">
             <div class="modal-content">
@@ -580,6 +589,28 @@
             </div>
         </div>
     </div>
+
+    <!-- Warning Modal General-->
+    <div class="modal fade" id="warningModalGeneral" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="warningModalGeneralTitle" class="modal-title">Warning!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="warningModalGeneralText" class="modal-body">
+                    Warning text
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">
+                        Ok
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
@@ -630,7 +661,7 @@
     });
 
     // Prevent Bootstrap dialog from blocking focusin
-    $(document).on('focusin', function(e) {
+    $(document).on('focusin', function (e) {
         if ($(e.target).closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root").length) {
             e.stopImmediatePropagation();
         }
