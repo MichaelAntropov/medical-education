@@ -1,16 +1,16 @@
 package me.hizencode.mededu.dashboard.admin;
 
-import me.hizencode.mededu.course.CourseLessonTestService;
-import me.hizencode.mededu.course.LearningItem;
-import me.hizencode.mededu.course.LearningItemType;
-import me.hizencode.mededu.course.lesson.LessonEntity;
-import me.hizencode.mededu.course.lesson.LessonService;
-import me.hizencode.mededu.course.lesson.media.LessonMediaEntity;
-import me.hizencode.mededu.course.lesson.media.LessonMediaService;
-import me.hizencode.mededu.course.test.CourseTestEntity;
-import me.hizencode.mededu.course.test.CourseTestService;
-import me.hizencode.mededu.courses.CourseEntity;
-import me.hizencode.mededu.courses.CourseService;
+import me.hizencode.mededu.course.content.CourseLessonTestService;
+import me.hizencode.mededu.course.content.CourseContentItem;
+import me.hizencode.mededu.course.content.CourseContentItemType;
+import me.hizencode.mededu.course.content.lesson.LessonEntity;
+import me.hizencode.mededu.course.content.lesson.LessonService;
+import me.hizencode.mededu.course.content.lesson.media.LessonMediaEntity;
+import me.hizencode.mededu.course.content.lesson.media.LessonMediaService;
+import me.hizencode.mededu.course.content.test.CourseTestEntity;
+import me.hizencode.mededu.course.content.test.CourseTestService;
+import me.hizencode.mededu.course.CourseEntity;
+import me.hizencode.mededu.course.CourseService;
 import me.hizencode.mededu.dashboard.admin.dto.AdminLessonDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -167,17 +167,17 @@ public class DashboardAdminLessonController {
         List<CourseTestEntity> testEntities = testService.findAllByCourseId(courseEntity.getId());
 
 
-        List<LearningItem> items = new ArrayList<>();
+        List<CourseContentItem> items = new ArrayList<>();
 
         items.addAll(lessonEntities);
         items.addAll(testEntities);
 
         items.removeIf(lesson -> lesson.getId() == lessonEntity.getId()
-                && lesson.getType() == LearningItemType.LESSON);
+                && lesson.getType() == CourseContentItemType.LESSON);
 
         //Reset order for lessons and tests
         for (int i = 0; i < items.size(); i++) {
-            LearningItem item = items.get(i);
+            CourseContentItem item = items.get(i);
             item.setOrderNumber(i + 1);
         }
         //Reset amount of lessons in the course

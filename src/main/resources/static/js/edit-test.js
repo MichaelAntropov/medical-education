@@ -53,12 +53,14 @@ class TestDataPostRequestJson {
     questions;
     questionsToDelete;
     answersToDelete;
+    requiredScore;
 
-    constructor(testId, questions, questionsToDelete, answersToDelete) {
+    constructor(testId, questions, questionsToDelete, answersToDelete, requiredScore) {
         this.testId = testId;
         this.questions = questions;
         this.questionsToDelete = questionsToDelete;
         this.answersToDelete = answersToDelete;
+        this.requiredScore = requiredScore;
     }
 }
 
@@ -86,13 +88,14 @@ const mainMediaListElement = document.getElementById("mainMediaList");
 const questionMediaListElement = document.getElementById("questionModalMediaList");
 const answerMediaListElement = document.getElementById("answerModalMediaList");
 
+const scoreRange = document.getElementById("scoreRange");
+
 const courseId = document.getElementById("courseId").value;
 const testId = document.getElementById("id").value;
 const csrfHeader = document.getElementsByName("_csrf_header").item(0).value;
 const csrf = document.getElementsByName("_csrf").item(0).value;
 
 const onLoadMediaData = receiveMediaList();
-
 
 //Functions for main info alert
 /////////////////////////////////////////////////
@@ -342,7 +345,7 @@ const testQuestion = [];
 
 const testQuestionsElement = document.getElementById("questionList");
 
-const testData = new TestDataPostRequestJson(parseInt(testId), [], [], []);
+const testData = new TestDataPostRequestJson(parseInt(testId), [], [], [], 0);
 
 const onLoadTestData = receiveTestData();
 
@@ -404,8 +407,8 @@ function getQuestionAnswerNode(answer) {
         "                <button type=\"button\" class=\"btn btn-light btn-outline-info float-right m-1\" onclick=\"moveAnswerUp(" + answer.orderNumber + ")\" " + upDisabled + ">\n" +
         "                    &#9650;\n" +
         "                </button>\n" +
-        "                <div class=\"custom-control custom-radio float-right m-1 mt-2\">\n" +
-        "                    <input class=\"custom-control-input\" type=\"radio\" " + checked + " onclick=\"checkAsCorrectAnswer(" + answer.orderNumber + ")\" \n" +
+        "                <div class=\"custom-control custom-radio float-right m-1 mt-2\" onclick=\"checkAsCorrectAnswer(" + answer.orderNumber + ")\">\n" +
+        "                    <input class=\"custom-control-input\" type=\"radio\" " + checked + "  \n" +
         "                           id=\"answerRadioButton" + answer.orderNumber + "\" name=\"answer\">\n" +
         "                        <label class=\"custom-control-label\" for=\"answerRadioButton" + answer.orderNumber + "\">\n" +
         "                            Correct\n" +
@@ -450,6 +453,7 @@ function saveCreatedQuestion() {
     addQuestionNode(question);
     testQuestion.pop();
     redrawQuestions();
+    updateScore();
     $("#questionModal").modal('hide');
 }
 
@@ -489,6 +493,7 @@ function deleteQuestion(orderNumber) {
         question.orderNumber = index + 1;
     })
     redrawQuestions();
+    updateScore();
 }
 
 function moveQuestionUp(orderNumber) {
@@ -522,11 +527,12 @@ function checkQuestion(question) {
         showGeneralWarning("Question must have at least one answer and one correct answer.")
         return false;
     }
-    question.answers.forEach(answer => {
-        if(answer.correct) {
+    for (let i = 0; i < question.answers.length; i++) {
+        if(question.answers[i].correct === true) {
             return true;
         }
-    });
+    }
+
     showGeneralWarning("Question must have at least one correct answer.")
     return false;
 }
@@ -599,7 +605,6 @@ function deleteAnswer(orderNumber) {
         answer.orderNumber = index + 1;
     })
     redrawAnswers();
-
 }
 
 function moveAnswerUp(orderNumber) {
@@ -666,7 +671,7 @@ function answerModalMediaButton() {
 function checkAsCorrectAnswer(answerOrderNumber) {
     let question = testQuestion[0];
     question.answers.forEach(answer => {
-        answer.correct = (answer.orderNumber === answerOrderNumber);
+        answer.correct = answer.orderNumber === answerOrderNumber;
     })
 }
 
@@ -701,6 +706,9 @@ function prepareQuestionContentEdit() {
     //Set content
     setQuestionContent(question.content);
     //Set answers
+    question.answers.sort((a, b) => {
+        return a.orderNumber - b.orderNumber
+    });
     question.answers.forEach(answer => {
         addAnswerNode(answer);
     })
@@ -849,11 +857,16 @@ async function receiveTestData() {
     })
     //Do it separately to allow ui draw correctly
     redrawQuestions();
+
+    requiredScore = testDataResponseJson.requiredScore;
+
+    setScore();
 }
 
 async function postTestData() {
 
     testData.questions = testQuestions;
+    testData.requiredScore = scoreRange.value;
 
     let testDataResponseJson;
 
@@ -891,6 +904,8 @@ async function postTestData() {
 //Utility functions
 ////////////////////////////////////////////////////
 //src - what to copy, node - where an temp input will be added
+let requiredScore;
+
 function copyUrl(src, node) {
 
     let copyText = document.createElement('input');
@@ -903,6 +918,27 @@ function copyUrl(src, node) {
     document.execCommand("copy");
     copyText.type = 'hidden';
     copyText.remove();
+}
+
+function setScore() {
+    let scoreRangeText = document.getElementById("scoreRangeText");
+    scoreRange.getAttributeNode("max").value =  testQuestions.length;
+    scoreRange.value = requiredScore;
+    scoreRangeText.textContent = requiredScore + "/" + testQuestions.length;
+}
+
+function resetScore() {
+    let scoreRangeText = document.getElementById("scoreRangeText");
+    scoreRangeText.textContent = scoreRange.value + "/" + testQuestions.length;
+}
+
+function updateScore() {
+    let scoreRangeText = document.getElementById("scoreRangeText");
+    scoreRange.getAttributeNode("max").value =  testQuestions.length;
+    if(scoreRange.value > testQuestions.length) {
+        scoreRange.value = testQuestions.length;
+    }
+    scoreRangeText.textContent = scoreRange.value + "/" + testQuestions.length;
 }
 
 function htmlToElement(html) {

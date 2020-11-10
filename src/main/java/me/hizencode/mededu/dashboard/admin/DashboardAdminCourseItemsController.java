@@ -1,12 +1,12 @@
 package me.hizencode.mededu.dashboard.admin;
 
-import me.hizencode.mededu.course.*;
-import me.hizencode.mededu.course.lesson.LessonEntity;
-import me.hizencode.mededu.course.lesson.LessonService;
-import me.hizencode.mededu.course.test.CourseTestEntity;
-import me.hizencode.mededu.course.test.CourseTestService;
-import me.hizencode.mededu.courses.CourseEntity;
-import me.hizencode.mededu.courses.CourseService;
+import me.hizencode.mededu.course.content.*;
+import me.hizencode.mededu.course.content.lesson.LessonEntity;
+import me.hizencode.mededu.course.content.lesson.LessonService;
+import me.hizencode.mededu.course.content.test.CourseTestEntity;
+import me.hizencode.mededu.course.content.test.CourseTestService;
+import me.hizencode.mededu.course.CourseEntity;
+import me.hizencode.mededu.course.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -74,17 +74,17 @@ public class DashboardAdminCourseItemsController {
         }
 
         //Get lessons and tests and combine
-        List<LearningItemProjection> lessons = lessonService.findAllByCourseIdOnlyIdAndTitleAndOrder(courseId);
-        List<LearningItemProjection> tests = testService.findAllByCourseIdAndTitleOnly(courseId);
+        List<CourseContentItemProjection> lessons = lessonService.findAllByCourseIdOnlyIdAndTitleAndOrder(courseId);
+        List<CourseContentItemProjection> tests = testService.findAllByCourseIdAndTitleOnly(courseId);
 
-        List<LearningItemProjection> learningItems = new ArrayList<>();
-        learningItems.addAll(lessons);
-        learningItems.addAll(tests);
+        List<CourseContentItemProjection> courseContentItems = new ArrayList<>();
+        courseContentItems.addAll(lessons);
+        courseContentItems.addAll(tests);
 
-        learningItems.sort(Comparator.comparingInt(LearningItemProjection::getOrderNumber));
+        courseContentItems.sort(Comparator.comparingInt(CourseContentItemProjection::getOrderNumber));
 
         model.addAttribute("courseId", courseId);
-        model.addAttribute("items", learningItems);
+        model.addAttribute("items", courseContentItems);
         model.addAttribute("courseName", courseEntity.get().getName());
         model.addAttribute("lessonCount", courseEntity.get().getLessonCount());
 
@@ -100,7 +100,7 @@ public class DashboardAdminCourseItemsController {
     private String moveLessonUp(@RequestParam(name = "itemId") Integer itemId,
                                 @RequestParam(name = "type") String learningItemType) {
 
-        Triple<LearningItem, LearningItem, CourseEntity> triple
+        Triple<CourseContentItem, CourseContentItem, CourseEntity> triple
                 = getLearningItemsToMove(itemId, learningItemType, -1);
 
         if (triple == null) {
@@ -117,7 +117,7 @@ public class DashboardAdminCourseItemsController {
     @PostMapping("/user-dashboard/manage-courses/course/lessons/item/down")
     private String moveLessonDown(@RequestParam(name = "itemId") Integer itemId,
                                   @RequestParam(name = "type") String learningItemType) {
-        Triple<LearningItem, LearningItem, CourseEntity> triple
+        Triple<CourseContentItem, CourseContentItem, CourseEntity> triple
                 = getLearningItemsToMove(itemId, learningItemType, 1);
 
         if (triple == null) {
@@ -131,74 +131,74 @@ public class DashboardAdminCourseItemsController {
         return "redirect:/user-dashboard/manage-courses/course" + triple.getC().getId() + "/lessons";
     }
 
-    private Triple<LearningItem, LearningItem, CourseEntity> getLearningItemsToMove(Integer itemId, String itemType, Integer orderShift) {
+    private Triple<CourseContentItem, CourseContentItem, CourseEntity> getLearningItemsToMove(Integer itemId, String itemType, Integer orderShift) {
         //Get item to move
-        LearningItem learningItem = null;
+        CourseContentItem courseContentItem = null;
 
-        if (itemType.equals(LearningItemType.LESSON.type)) {
+        if (itemType.equals(CourseContentItemType.LESSON.value)) {
             Optional<LessonEntity> lessonEntityOptional = lessonService.findById(itemId);
             if (lessonEntityOptional.isEmpty()) {
                 return null;
             }
-            learningItem = lessonEntityOptional.get();
+            courseContentItem = lessonEntityOptional.get();
         }
 
-        if (itemType.equals(LearningItemType.TEST.type)) {
+        if (itemType.equals(CourseContentItemType.TEST.value)) {
             Optional<CourseTestEntity> testEntityOptional = testService.findById(itemId);
             if (testEntityOptional.isEmpty()) {
                 return null;
             }
-            learningItem = testEntityOptional.get();
+            courseContentItem = testEntityOptional.get();
         }
 
-        if (learningItem == null) {
+        if (courseContentItem == null) {
             return null;
         }
 
-        CourseEntity courseEntity = learningItem.getCourse();
+        CourseEntity courseEntity = courseContentItem.getCourse();
 
         //Check if the item is first/last
-        if (orderShift == -1 && learningItem.getOrderNumber() == 1) {
+        if (orderShift == -1 && courseContentItem.getOrderNumber() == 1) {
             return null;
         }
 
-        if (orderShift == 1 && learningItem.getOrderNumber() == courseEntity.getLessonCount()) {
+        if (orderShift == 1 && courseContentItem.getOrderNumber() == courseEntity.getLessonCount()) {
             return null;
         }
 
         //Get lesson to switch with
-        LearningItem learningItemSwapWith = null;
+        CourseContentItem courseContentItemSwapWith = null;
 
         Optional<LessonEntity> lessonEntityOptional =
-                lessonService.findByCourseIdAndOrderNumber(courseEntity.getId(), learningItem.getOrderNumber() + orderShift);
+                lessonService.findByCourseIdAndOrderNumber(courseEntity.getId(), courseContentItem.getOrderNumber() + orderShift);
 
         Optional<CourseTestEntity> testEntityOptional =
-                testService.findByCourseIdAndOrderNumber(courseEntity.getId(), learningItem.getOrderNumber() + orderShift);
+                testService.findByCourseIdAndOrderNumber(courseEntity.getId(), courseContentItem.getOrderNumber() + orderShift);
 
         if (lessonEntityOptional.isPresent()) {
-            learningItemSwapWith = lessonEntityOptional.get();
+            courseContentItemSwapWith = lessonEntityOptional.get();
         }
         if (testEntityOptional.isPresent()) {
-            learningItemSwapWith = testEntityOptional.get();
+            courseContentItemSwapWith = testEntityOptional.get();
         }
-        if (learningItemSwapWith == null) {
+        if (courseContentItemSwapWith == null) {
             return null;
         }
 
-        return Triple.of(learningItem, learningItemSwapWith, courseEntity);
+        return Triple.of(courseContentItem, courseContentItemSwapWith, courseEntity);
     }
 
-    private void swapWithPrevious(LearningItem learningItem, LearningItem learningItemPrevious) {
-        int temp = learningItemPrevious.getOrderNumber();
+    private void swapWithPrevious(CourseContentItem courseContentItem, CourseContentItem courseContentItemPrevious) {
+        int temp = courseContentItemPrevious.getOrderNumber();
 
-        learningItemPrevious.setOrderNumber(learningItem.getOrderNumber());
-        learningItem.setOrderNumber(temp);
+        courseContentItemPrevious.setOrderNumber(courseContentItem.getOrderNumber());
+        courseContentItem.setOrderNumber(temp);
     }
 
-    private void swapWithNext(LearningItem learningItem, LearningItem learningItemNext) {
-        int temp = learningItem.getOrderNumber();
+    private void swapWithNext(CourseContentItem courseContentItem, CourseContentItem courseContentItemNext) {
+        int temp = courseContentItem.getOrderNumber();
 
-        learningItem.setOrderNumber(learningItemNext.getOrderNumber());
-        learningItemNext.setOrderNumber(temp);
+        courseContentItem.setOrderNumber(courseContentItemNext.getOrderNumber());
+        courseContentItemNext.setOrderNumber(temp);
     }
 }

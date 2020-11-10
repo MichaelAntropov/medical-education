@@ -1,19 +1,20 @@
 package me.hizencode.mededu.dashboard.admin;
 
-import me.hizencode.mededu.course.CourseLessonTestService;
-import me.hizencode.mededu.course.LearningItem;
-import me.hizencode.mededu.course.LearningItemType;
-import me.hizencode.mededu.course.lesson.LessonEntity;
-import me.hizencode.mededu.course.lesson.LessonService;
-import me.hizencode.mededu.course.test.CourseAnswerEntity;
-import me.hizencode.mededu.course.test.CourseQuestionEntity;
-import me.hizencode.mededu.course.test.CourseTestEntity;
-import me.hizencode.mededu.course.test.CourseTestService;
-import me.hizencode.mededu.course.test.media.CourseTestMediaEntity;
-import me.hizencode.mededu.course.test.media.CourseTestMediaService;
-import me.hizencode.mededu.courses.CourseEntity;
-import me.hizencode.mededu.courses.CourseService;
+import me.hizencode.mededu.course.content.CourseLessonTestService;
+import me.hizencode.mededu.course.content.CourseContentItem;
+import me.hizencode.mededu.course.content.CourseContentItemType;
+import me.hizencode.mededu.course.content.lesson.LessonEntity;
+import me.hizencode.mededu.course.content.lesson.LessonService;
+import me.hizencode.mededu.course.content.test.CourseAnswerEntity;
+import me.hizencode.mededu.course.content.test.CourseQuestionEntity;
+import me.hizencode.mededu.course.content.test.CourseTestEntity;
+import me.hizencode.mededu.course.content.test.CourseTestService;
+import me.hizencode.mededu.course.content.test.media.CourseTestMediaEntity;
+import me.hizencode.mededu.course.content.test.media.CourseTestMediaService;
+import me.hizencode.mededu.course.CourseEntity;
+import me.hizencode.mededu.course.CourseService;
 import me.hizencode.mededu.dashboard.admin.dto.*;
+import me.hizencode.mededu.dashboard.admin.json.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -168,17 +169,17 @@ public class DashboardAdminTestController {
         List<CourseTestEntity> testEntities = testService.findAllByCourseId(courseEntity.getId());
 
 
-        List<LearningItem> items = new ArrayList<>();
+        List<CourseContentItem> items = new ArrayList<>();
 
         items.addAll(lessonEntities);
         items.addAll(testEntities);
 
         items.removeIf(test -> test.getId() == testEntity.getId()
-                && test.getType() == LearningItemType.TEST);
+                && test.getType() == CourseContentItemType.TEST);
 
         //Reset order for lessons and tests
         for (int i = 0; i < items.size(); i++) {
-            LearningItem item = items.get(i);
+            CourseContentItem item = items.get(i);
             item.setOrderNumber(i + 1);
         }
         //Reset amount of lessons in the course
@@ -287,7 +288,9 @@ public class DashboardAdminTestController {
 
         });
 
-        return new TestDataResponseJson("Test data were successfully requested.", questionsJsonList);
+        return new TestDataResponseJson("Test data were successfully requested.",
+                testEntity.get().getRequiredScore(),
+                questionsJsonList);
     }
 
     @ResponseBody
@@ -303,6 +306,9 @@ public class DashboardAdminTestController {
 
         List<CourseQuestionEntity> courseQuestionEntities = testEntity.get().getQuestions();
 
+        //Set required score
+        testEntity.get().setRequiredScore(testData.getRequiredScore());
+
         courseQuestionEntities.removeIf(courseQuestionEntity ->
                 testData.getQuestionsToDelete().contains(courseQuestionEntity.getId()));
 
@@ -315,6 +321,8 @@ public class DashboardAdminTestController {
         updateCourseQuestionList(testEntity.get(), courseQuestionEntities, testData.getQuestions());
 
         testService.saveQuestions(courseQuestionEntities, testData.getQuestionsToDelete(), testData.getAnswersToDelete());
+        testService.markTestAsEdited(testEntity.get());
+        testService.saveTest(testEntity.get());
 
         return new TestDataResponseJson("Test data was updated.");
     }

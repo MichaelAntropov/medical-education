@@ -1,12 +1,12 @@
 package me.hizencode.mededu.dashboard.admin;
 
-import me.hizencode.mededu.courses.CourseDescriptionEntity;
-import me.hizencode.mededu.courses.CourseDetailEntity;
-import me.hizencode.mededu.courses.CourseEntity;
-import me.hizencode.mededu.courses.CourseService;
+import me.hizencode.mededu.course.CourseDescriptionEntity;
+import me.hizencode.mededu.course.CourseDetailEntity;
+import me.hizencode.mededu.course.CourseEntity;
+import me.hizencode.mededu.course.CourseService;
 import me.hizencode.mededu.dashboard.admin.dto.AdminCourseDto;
 import me.hizencode.mededu.dashboard.admin.dto.AdminSearchDataDto;
-import me.hizencode.mededu.image.ImageEntity;
+import me.hizencode.mededu.course.image.ImageEntity;
 import me.hizencode.mededu.specialities.SpecialityEntity;
 import me.hizencode.mededu.specialities.SpecialityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,21 +51,21 @@ public class DashboardAdminCourseController {
 
     @GetMapping("/user-dashboard/manage-courses")
     private String showManageCourses(@RequestParam(value = "text", required = false, defaultValue = "") String text,
-                                 @RequestParam(value = "specialities", required = false, defaultValue = "") List<String> specialitiesIds,
-                                 @RequestParam(value = "page", required = false, defaultValue = "1") String pageNumberStr,
-                                 Model model) {
+                                     @RequestParam(value = "specialities", required = false, defaultValue = "") List<String> specialitiesIds,
+                                     @RequestParam(value = "page", required = false, defaultValue = "1") String pageNumberStr,
+                                     Model model) {
         int pageNumber;
 
         try {
             pageNumber = Integer.parseInt(pageNumberStr);
-            if(pageNumber < 1) {
+            if (pageNumber < 1) {
                 return "redirect:/user-dashboard/manage-courses";
             }
         } catch (NumberFormatException e) {
             return "redirect:/user-dashboard/manage-courses";
         }
 
-        if(text.length() > 128 || specialitiesIds.size() > 128) {
+        if (text.length() > 128 || specialitiesIds.size() > 128) {
             return "redirect:/user-dashboard/manage-courses";
         }
 
@@ -78,7 +78,7 @@ public class DashboardAdminCourseController {
         model.addAttribute("searchData", searchData);
 
         //Do the standard query or search
-        if(text.isEmpty() && specialitiesIds.isEmpty()) {
+        if (text.isEmpty() && specialitiesIds.isEmpty()) {
             //Fetch 10 courses by editDate
             Page<CourseEntity> page = courseService.findAll(
                     PageRequest.of(pageNumber - 1, 10, Sort.by(Sort.Direction.DESC, "editDate")));
@@ -88,7 +88,7 @@ public class DashboardAdminCourseController {
             return "user-dashboard/admin/courses/manage-courses";
         }
 
-        if(!text.isEmpty() && specialitiesIds.isEmpty()) {
+        if (!text.isEmpty() && specialitiesIds.isEmpty()) {
             Page<CourseEntity> page = courseService.findAllByNameIsLike(text,
                     PageRequest.of(pageNumber - 1, 10, Sort.by(Sort.Direction.DESC, "editDate")));
 
@@ -101,7 +101,7 @@ public class DashboardAdminCourseController {
             return "user-dashboard/admin/courses/manage-courses";
         }
 
-        if(text.isEmpty()) {
+        if (text.isEmpty()) {
             List<Integer> specialitiesIdsInt = new ArrayList<>();
             for (String stringId : specialitiesIds) {
                 try {
