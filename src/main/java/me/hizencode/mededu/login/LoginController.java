@@ -13,7 +13,11 @@ public class LoginController {
 
     @GetMapping("/access-denied")
     public String showAccessDenied() {
-        return "access-denied";
+        return "403";
     }
 
+    @GetMapping("/not-found")
+    public String showNotFound() {
+        return "404";
+    }
 }

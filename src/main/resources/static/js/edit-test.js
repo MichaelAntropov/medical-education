@@ -53,12 +53,14 @@ class TestDataPostRequestJson {
     questions;
     questionsToDelete;
     answersToDelete;
+    requiredScore;
 
-    constructor(testId, questions, questionsToDelete, answersToDelete) {
+    constructor(testId, questions, questionsToDelete, answersToDelete, requiredScore) {
         this.testId = testId;
         this.questions = questions;
         this.questionsToDelete = questionsToDelete;
         this.answersToDelete = answersToDelete;
+        this.requiredScore = requiredScore;
     }
 }
 
@@ -86,13 +88,14 @@ const mainMediaListElement = document.getElementById("mainMediaList");
 const questionMediaListElement = document.getElementById("questionModalMediaList");
 const answerMediaListElement = document.getElementById("answerModalMediaList");
 
+const scoreRange = document.getElementById("scoreRange");
+
 const courseId = document.getElementById("courseId").value;
 const testId = document.getElementById("id").value;
 const csrfHeader = document.getElementsByName("_csrf_header").item(0).value;
 const csrf = document.getElementsByName("_csrf").item(0).value;
 
 const onLoadMediaData = receiveMediaList();
-
 
 //Functions for main info alert
 /////////////////////////////////////////////////
@@ -342,7 +345,7 @@ const testQuestion = [];
 
 const testQuestionsElement = document.getElementById("questionList");
 
-const testData = new TestDataPostRequestJson(parseInt(testId), [], [], []);
+const testData = new TestDataPostRequestJson(parseInt(testId), [], [], [], 0);
 
 const onLoadTestData = receiveTestData();
 
@@ -404,8 +407,8 @@ function getQuestionAnswerNode(answer) {
         "                <button type=\"button\" class=\"btn btn-light btn-outline-info float-right m-1\" onclick=\"moveAnswerUp(" + answer.orderNumber + ")\" " + upDisabled + ">\n" +
         "                    &#9650;\n" +
         "                </button>\n" +
-        "                <div class=\"custom-control custom-radio float-right m-1 mt-2\">\n" +
-        "                    <input class=\"custom-control-input\" type=\"radio\" " + checked + " onclick=\"checkAsCorrectAnswer(" + answer.orderNumber + ")\" \n" +
+        "                <div class=\"custom-control custom-radio float-right m-1 mt-2\" onclick=\"checkAsCorrectAnswer(" + answer.orderNumber + ")\">\n" +
+        "                    <input class=\"custom-control-input\" type=\"radio\" " + checked + "  \n" +
         "                           id=\"answerRadioButton" + answer.orderNumber + "\" name=\"answer\">\n" +
         "                        <label class=\"custom-control-label\" for=\"answerRadioButton" + answer.orderNumber + "\">\n" +
         "                            Correct\n" +
@@ -438,6 +441,11 @@ function showCreateQuestion() {
 
 function saveCreatedQuestion() {
     let question = testQuestion[0];
+
+    if(!checkQuestion(question)) {
+        return;
+    }
+
     question.orderNumber = testQuestions.length + 1;
     question.content = getQuestionContent();
     question.edited = true;
@@ -445,6 +453,7 @@ function saveCreatedQuestion() {
     addQuestionNode(question);
     testQuestion.pop();
     redrawQuestions();
+    updateScore();
     $("#questionModal").modal('hide');
 }
 
@@ -460,6 +469,11 @@ function showEditQuestion(questionOrderNumber) {
 
 function saveEditedQuestion() {
     let questionEdited = testQuestion[0];
+
+    if(!checkQuestion(questionEdited)) {
+        return;
+    }
+
     questionEdited.content = getQuestionContent();
     //Save to main list
     testQuestions[questionEdited.orderNumber - 1] = questionEdited;
@@ -479,6 +493,7 @@ function deleteQuestion(orderNumber) {
         question.orderNumber = index + 1;
     })
     redrawQuestions();
+    updateScore();
 }
 
 function moveQuestionUp(orderNumber) {
@@ -507,6 +522,21 @@ function moveQuestionDown(orderNumber) {
     redrawQuestions();
 }
 
+function checkQuestion(question) {
+    if(question.answers.length < 1) {
+        showGeneralWarning("Question must have at least one answer and one correct answer.")
+        return false;
+    }
+    for (let i = 0; i < question.answers.length; i++) {
+        if(question.answers[i].correct === true) {
+            return true;
+        }
+    }
+
+    showGeneralWarning("Question must have at least one correct answer.")
+    return false;
+}
+
 function showDeleteQuestionModal(orderNumber) {
     document.getElementById("deleteModalTitle")
         .innerText = "Delete question";
@@ -520,6 +550,11 @@ function showDeleteQuestionModal(orderNumber) {
 function closeQuestionWarning() {
     $("#warningModal").modal('hide');
     $("#questionModal").modal('hide');
+}
+
+function showGeneralWarning(text) {
+    $("#warningModalGeneral").modal();
+    document.getElementById("warningModalGeneralText").innerText = text;
 }
 
 ////////////////
@@ -570,7 +605,6 @@ function deleteAnswer(orderNumber) {
         answer.orderNumber = index + 1;
     })
     redrawAnswers();
-
 }
 
 function moveAnswerUp(orderNumber) {
@@ -637,7 +671,7 @@ function answerModalMediaButton() {
 function checkAsCorrectAnswer(answerOrderNumber) {
     let question = testQuestion[0];
     question.answers.forEach(answer => {
-        answer.correct = (answer.orderNumber === answerOrderNumber);
+        answer.correct = answer.orderNumber === answerOrderNumber;
     })
 }
 
@@ -672,6 +706,9 @@ function prepareQuestionContentEdit() {
     //Set content
     setQuestionContent(question.content);
     //Set answers
+    question.answers.sort((a, b) => {
+        return a.orderNumber - b.orderNumber
+    });
     question.answers.forEach(answer => {
         addAnswerNode(answer);
     })
@@ -820,11 +857,16 @@ async function receiveTestData() {
     })
     //Do it separately to allow ui draw correctly
     redrawQuestions();
+
+    requiredScore = testDataResponseJson.requiredScore;
+
+    setScore();
 }
 
 async function postTestData() {
 
     testData.questions = testQuestions;
+    testData.requiredScore = scoreRange.value;
 
     let testDataResponseJson;
 
@@ -862,6 +904,8 @@ async function postTestData() {
 //Utility functions
 ////////////////////////////////////////////////////
 //src - what to copy, node - where an temp input will be added
+let requiredScore;
+
 function copyUrl(src, node) {
 
     let copyText = document.createElement('input');
@@ -876,6 +920,27 @@ function copyUrl(src, node) {
     copyText.remove();
 }
 
+function setScore() {
+    let scoreRangeText = document.getElementById("scoreRangeText");
+    scoreRange.getAttributeNode("max").value =  testQuestions.length;
+    scoreRange.value = requiredScore;
+    scoreRangeText.textContent = requiredScore + "/" + testQuestions.length;
+}
+
+function resetScore() {
+    let scoreRangeText = document.getElementById("scoreRangeText");
+    scoreRangeText.textContent = scoreRange.value + "/" + testQuestions.length;
+}
+
+function updateScore() {
+    let scoreRangeText = document.getElementById("scoreRangeText");
+    scoreRange.getAttributeNode("max").value =  testQuestions.length;
+    if(scoreRange.value > testQuestions.length) {
+        scoreRange.value = testQuestions.length;
+    }
+    scoreRangeText.textContent = scoreRange.value + "/" + testQuestions.length;
+}
+
 function htmlToElement(html) {
     let template = document.createElement('template');
     html = html.trim(); // Never return a text node of whitespace as the result
@@ -885,16 +950,4 @@ function htmlToElement(html) {
 
 function getRandomInt(min, max) {
     return Math.random() * (max - min) + min;
-}
-
-function logTestData() {
-    testData.questions = testQuestions;
-    console.log(testData);
-}
-
-function logArray() {
-    console.log(testQuestions);
-}
-function postData() {
-    postTestData();
 }

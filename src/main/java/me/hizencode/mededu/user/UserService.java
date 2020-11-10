@@ -6,6 +6,7 @@ import me.hizencode.mededu.user.profile.UserProfileService;
 import me.hizencode.mededu.user.role.RoleEntity;
 import me.hizencode.mededu.user.role.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -112,5 +113,11 @@ public class UserService implements UserDetailsService {
 
     private boolean usernameOrEmailExists(String username, String email) {
         return userRepository.findUserEntityByUsernameOrEmail(username, email).isPresent();
+    }
+
+    public boolean userHasRole(Authentication authentication, String role) {
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+
+        return userPrincipal.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_" + role));
     }
 }

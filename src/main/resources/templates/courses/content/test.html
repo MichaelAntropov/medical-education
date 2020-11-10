@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <title>Test</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="../../../static/css/bootstrap.css">
+    <link rel="stylesheet" href="../../../static/css/bootstrap-grid.css">
+
+    <link rel="stylesheet" href="../../../static/css/custom.css">
+    <!--===============================================================================================-->
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-primary">
+
+    <div class="container flex-row">
+
+        <a class="navbar-brand" th:href="@{/}">
+            <img src="../../../static/img/logo.png" alt="Logo" style="width:40px">
+            Hizencode
+        </a>
+
+        <button class="navbar-toggler collapsed" type="button"
+                data-toggle="collapse" data-target="#navbarsExample05"
+                aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="navbar-collapse collapse " id="navbarsExample05" style="">
+            <ul class="navbar-nav ml-auto main-menu-nav
+					 d-flex justify-content-center align-items-center">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Project<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Courses<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Contacts<span class="sr-only">(current)</span></a>
+                </li>
+
+                <div class="d-none d-md-block pr-4"></div>
+
+                <div class="d-none d-md-block pr-4 border-left border-light" style="height: 30px"></div>
+
+                <div class="d-sm-block d-md-none border-bottom border-light" style="width: 90%"></div>
+
+                <!-- Shown only to authorized users-->
+                <li sec:authorize="isAuthenticated()" class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" th:href="@{/user-dashboard}"
+                       th:text="${#authentication.getPrincipal().getEmail()}">Name
+                    </a>
+                    <div class="dropdown-menu">
+                        <form th:action="@{/logout}" method="post">
+                            <input class="dropdown-item" type="submit" value="Log out">
+                        </form>
+                    </div>
+                </li>
+
+                <!-- Shown only to visitors -->
+                <li sec:authorize="!isAuthenticated()" class="nav-item active ">
+                    <a class="nav-link" th:href="@{/login}">Sign in<span class="sr-only">(current)</span></a>
+                </li>
+
+                <li sec:authorize="!isAuthenticated()" class="nav-item active">
+                    <a class="nav-link" th:href="@{/registration}">Sign up<span
+                            class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+<div class="d-flex container-fluid">
+
+    <div class="row">
+        <!-- List of lessons and tests -->
+        <div class="col-2 sidebar sidebar-sticky overflow-auto" id="courseContent">
+            <div class="container  p-0 m-0 pt-3" style="height: auto">
+                <!-- Learning item -->
+                <div th:each="item : ${items}">
+                    <a th:href="@{'/courses/course' + ${courseId} + '/' + ${item.getType()} + ${item.getId()}}"
+                       class="text-dark">
+                        <div class="card learning-item ml-1 mr-3 mb-2"
+                             th:classappend="${(item.getCompleted() == 1 ? 'alert-success' : '') +
+                                                (item.getCompleted() == -1 ? 'alert-danger' : '') +
+                                                (item.getCompleted() == 2 ? 'alert-warning' : '')}">
+                            <div class="card-body " th:text="${item.getTitle()}">
+                                Content title
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col">
+            <div class="card mt-3 ml-2 mb-3" style="min-height: 85vh">
+                <!-- Content -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <button class="btn btn-secondary" type="button"
+                                    onclick="toggleCourseContent()">
+                                Course content
+                            </button>
+                        </div>
+                    </div>
+                    <input type="hidden" id="courseId" th:value="${courseId}">
+                    <input type="hidden" id="testId" th:value="${testId}">
+                    <input type="hidden" id="nextItemId" th:value="${test.getNextItemId()}">
+                    <input type="hidden" id="nextItemType" th:value="${test.getNextItemType()}">
+                    <!-- Test title -->
+                    <div class="row justify-content-center">
+                        <h4 class="mb-5" th:text="${test.getTitle()}">Test title</h4>
+                    </div>
+                    <!-- Test content -->
+                    <div class="row">
+                        <div class="container mb-5">
+                            <div th:utext="${test.getContent()}"></div>
+                        </div>
+                    </div>
+                    <!-- Info alerts -->
+                    <div class="row">
+                        <div class="container mb-5">
+                            <div id="mainInfoAlertsElement"></div>
+                        </div>
+                    </div>
+
+                    <!-- Test questions -->
+                    <div class="row">
+                        <div id="questionListElement" class="container mb-5">
+                            <div class="text-muted">No content</div>
+                        </div>
+                    </div>
+                    <!-- Test Completion -->
+                    <div th:if="${test.getCompleted() != null && test.getCompleted() != 0}" class="row">
+                        <div class="container mb-5">
+                            <div class="alert" role="alert"
+                                 th:classappend="${(test.getCompleted() == 1 ? 'alert-success' : '') +
+                                                (test.getCompleted() == -1 ? 'alert-danger' : '') +
+                                                (test.getCompleted() == 2 ? 'alert-warning' : '')}">
+                                <div class="text text-dark text-center"
+                                     th:if="${test.getCompleted() == -1}">
+                                    Required score to pass test: <span th:text="${test.getRequiredScore()}">6</span>
+                                </div>
+                                <div class="text text-dark text-center"
+                                     th:if="${test.getCompleted() == 2}">
+                                    Test was changed, please submit again to get certificate
+                                </div>
+                                <div class="text text-dark text-center">
+                                    <h5>Your score:</h5>
+                                    <h3 th:text="${test.getUserScore()} + '/' + ${test.getQuestionCount()}">6/10</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Complete test -->
+                    <div class="row flex-row">
+                        <div sec:authorize="hasRole('USER')" id="completeTest" class="container mb-5">
+                            <button type="submit" class="btn btn-info float-right" onclick="postTestAnswers()">
+                                Submit test
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/27c4e55744.js" crossorigin="anonymous"></script>
+
+<script src="../../../static/js/course-test.js"></script>
+
+<script>
+    function toggleCourseContent() {
+        document.getElementById("courseContent").classList.toggle("d-none");
+    }
+</script>
+
+</body>
+</html>

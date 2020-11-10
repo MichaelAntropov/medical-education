@@ -1,6 +1,6 @@
 package me.hizencode.mededu.dashboard.admin.dto;
 
-import me.hizencode.mededu.course.lesson.media.LessonMediaEntity;
+import me.hizencode.mededu.course.content.lesson.media.LessonMediaEntity;
 
 import java.util.List;
 

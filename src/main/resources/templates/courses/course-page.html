@@ -116,6 +116,7 @@
                                     <li class="list-group-item">
                                         <span><i class="far fa-calendar-alt"></i></span>
                                         Available from:
+<!--                                        //TODO: Check if there is dates or implement input chen on course create in dashboard -->
                                         <span id="startCourse" class="float-right"
                                               th:text="${course.getStartCourse().getMonth()} + '.' +
                                               ${course.getStartCourse().getDate()} + '.' +
@@ -129,10 +130,31 @@
                                               ${course.getEndCourse().getDate()} + '.' +
                                               ${course.getEndCourse().getYear()  + 1900}">01.01.2020</span>
                                     </li>
-                                    <li class="list-group-item">
-                                        <a class="btn btn-primary w-100" href="#">
-                                            Take course
+                                    <li sec:authorize="!isAuthenticated()" class="list-group-item">
+                                        <a class="btn btn-primary w-100" th:href="@{/login}">
+                                            Sign in
                                         </a>
+                                    </li>
+
+                                    <li sec:authorize="hasRole('ADMIN')" class="list-group-item">
+                                        <a class="btn btn-primary w-100" th:href="@{/courses/course{courseId}/continue(courseId = ${courseId})}">
+                                            View content
+                                        </a>
+                                    </li>
+
+                                    <li sec:authorize="hasRole('USER')" th:if="${isSigned == true}" class="list-group-item">
+                                        <a class="btn btn-primary w-100" th:href="@{/courses/course{courseId}/continue(courseId = ${courseId})}">
+                                            Continue
+                                        </a>
+                                    </li>
+
+                                    <li sec:authorize="hasRole('USER')" th:if="${isSigned == false}" class="list-group-item">
+                                        <form th:action="@{/courses/course/signup}" method="post">
+                                            <input type="hidden" name="courseId" th:value="${courseId}">
+                                            <button type="submit" class="btn btn-primary w-100">
+                                                Take course
+                                            </button>
+                                        </form>
                                     </li>
                                 </ul>
                             </div>
