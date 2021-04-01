@@ -88,7 +88,7 @@ Edit tests:
 ### How to run it: ###
 * Clone git repo, let maven get dependencies
 * Create MySQL database & configure it in application.properties
-* Run SQL scripts in MySQL
+* Run SQL scripts in MySQL(medical_education_db_script.sql - only for the schema, [for schema and data](https://www.dropbox.com/s/sx4l7zzxahe7yrz/medical_education_db_data_script.sql?dl=0))
 * Launch using Application.java in your IDE
 
 
